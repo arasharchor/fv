@@ -31,6 +31,9 @@
     <Filter Include="源文件\feature\extfeat">
       <UniqueIdentifier>{1838768f-011b-4a25-9013-5d4457b6e622}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\model">
+      <UniqueIdentifier>{76b0fda0-9143-4c36-8809-82cfcf072f9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -53,12 +56,6 @@
     <ClInclude Include="common.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="cextfeat.h">
-      <Filter>头文件\feature\extfeat</Filter>
-    </ClInclude>
-    <ClInclude Include="cpreprocess.h">
-      <Filter>头文件\feature\prerocess</Filter>
-    </ClInclude>
     <ClInclude Include="cpreprocessDemo.h">
       <Filter>头文件\feature\prerocess</Filter>
     </ClInclude>
@@ -67,6 +64,15 @@
     </ClInclude>
     <ClInclude Include="cfeature.h">
       <Filter>头文件\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="cmodel.h">
+      <Filter>头文件\model</Filter>
+    </ClInclude>
+    <ClInclude Include="cextfeatInt.h">
+      <Filter>头文件\feature\extfeat</Filter>
+    </ClInclude>
+    <ClInclude Include="cpreprocessInt.h">
+      <Filter>头文件\feature\prerocess</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

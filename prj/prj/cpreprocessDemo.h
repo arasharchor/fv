@@ -1,9 +1,9 @@
 #ifndef __CPREPROCESS_DEMO_H
 #define __CPREPROCESS_DEMO_H
 
-#include "cpreprocess.h"
+#include "cpreprocessInt.h"
 
-class CPreprocessDemo : public CPreprocess
+class CPreprocessDemo : public CPreprocessInt
 {
 	/* ctor and de-ctor */
 public:

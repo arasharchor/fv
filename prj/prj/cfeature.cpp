@@ -6,8 +6,8 @@
 
 CFeature::CFeature(ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2)
 {
-	CPreprocess *preprocess=new CPreprocessDemo();
-	CExtfeat *extfeat=new CExtfeatDemo();
+	CPreprocessInt *preprocess=new CPreprocessDemo();
+	CExtfeatInt *extfeat=new CExtfeatDemo();
 
 	//‘§¥¶¿Ì
 	if(preprocess)

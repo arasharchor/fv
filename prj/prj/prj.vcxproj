@@ -68,9 +68,10 @@
   <ItemGroup>
     <ClInclude Include="cextfeatDemo.h" />
     <ClInclude Include="cfeature.h" />
+    <ClInclude Include="cmodel.h" />
     <ClInclude Include="common.h" />
-    <ClInclude Include="cpreprocess.h" />
-    <ClInclude Include="cextfeat.h" />
+    <ClInclude Include="cpreprocessInt.h" />
+    <ClInclude Include="cextfeatInt.h" />
     <ClInclude Include="cpreprocessDemo.h" />
     <ClInclude Include="wrap.h" />
   </ItemGroup>

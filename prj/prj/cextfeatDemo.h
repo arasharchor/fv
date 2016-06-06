@@ -1,9 +1,9 @@
 #ifndef __CEXTFEAT_H
 #define __CEXTFEAT_H
 
-#include "cextfeat.h"
+#include "cextfeatInt.h"
 
-class CExtfeatDemo : public CExtfeat
+class CExtfeatDemo : public CExtfeatInt
 {
 	/* ctor and de-ctor */
 public:
