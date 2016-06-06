@@ -62,14 +62,15 @@
   <ItemGroup>
     <ClCompile Include="cextfeatDemo.cpp" />
     <ClCompile Include="cfeature.cpp" />
+    <ClCompile Include="cmodeDemo.cpp" />
     <ClCompile Include="cpreprocessDemo.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cextfeatDemo.h" />
     <ClInclude Include="cfeature.h" />
-    <ClInclude Include="cmodel.h" />
-    <ClInclude Include="common.h" />
+    <ClInclude Include="cmodelDemo.h" />
+    <ClInclude Include="cmodelInt.h" />
     <ClInclude Include="cpreprocessInt.h" />
     <ClInclude Include="cextfeatInt.h" />
     <ClInclude Include="cpreprocessDemo.h" />

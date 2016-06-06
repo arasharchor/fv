@@ -1,5 +1,5 @@
-#ifndef __CPREPROCESS_Ci_H
-#define __CPREPROCESS_H
+#ifndef __CPREPROCESS_INT_H
+#define __CPREPROCESS_INT_H
 
 class ImgWrap;
 

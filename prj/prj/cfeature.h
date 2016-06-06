@@ -1,12 +1,18 @@
 #ifndef __CFEATURE_H
 #define __CFEATURE_H
 
+#include <vector>
+
 class ImgWrap;
 
-class CFeatureModel
+//特征组织类
+class CFeatureStore
 {
-public:	CFeatureModel(void *ptr=NULL):context(ptr){}
-public:	void *context;
+public:
+	CFeatureStore(){ featStore.clear();numberPerFeatType.clear(); }
+public:
+	std::vector<std::vector<double>> featStore;		//整个特征的存储由数个vector组织起来
+	std::vector<int>	numberPerFeatType;			//每种特征的数量
 };
 
 class CFeature
@@ -24,8 +30,8 @@ public:
 private:
 
 	/* member var */
-private:
-	CFeatureModel mFeatureModel;
+public:
+	CFeatureStore mFeatureStore;
 };
 
 #endif 

@@ -1,14 +1,14 @@
-#ifndef __CEXT_FEAT_H
-#define __CEXT_FEAT_H
+#ifndef __CEXT_FEAT_INT_H
+#define __CEXT_FEAT_INT_H
 
 class ImgWrap;
-class CFeatureModel;
+class CFeatureStore;
 
 class CExtfeatInt
 {
 	/* interface */
 public:
-	virtual void doit( ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2, CFeatureModel *featModel)=0;
+	virtual void doit( ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2, CFeatureStore *featStore)=0;
 };
 
 #endif

@@ -19,6 +19,6 @@ CFeature::CFeature(ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2)
 	//ÌáÈ¡ÌØÕ÷
 	if(extfeat)
 	{
-		extfeat->doit(imgWrapSrc1, imgWrapSrc2, &this->mFeatureModel);
+		extfeat->doit(imgWrapSrc1, imgWrapSrc2, &this->mFeatureStore);
 	}
 }
