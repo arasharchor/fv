@@ -2,7 +2,6 @@
 /prj/Debug
 /prj/ipch
 /prj/*.sdf
+/prj/*.suo
 
 /prj/prj/Debug
-/prj/prj/*.sdf
-/prj/prj/*.suo
