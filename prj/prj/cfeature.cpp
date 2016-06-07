@@ -12,7 +12,7 @@ CFeature::CFeature(ImgWrap *imgWrapSrc)
 	//预处理
 	if(preprocess)
 	{
-		preprocess->doit(imgWrapSrc);
+//		preprocess->doit(imgWrapSrc);
 	}
 
 	//提取特征
