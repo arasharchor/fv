@@ -2,6 +2,10 @@
 #define __CFEATURE_H
 
 #include <vector>
+#include <cv.h>
+
+using namespace std;
+using namespace cv;
 
 class ImgWrap;
 
@@ -9,10 +13,10 @@ class ImgWrap;
 class CFeatureStore
 {
 public:
-	CFeatureStore(){ featStore.clear();numberPerFeatType.clear(); }
+	CFeatureStore(){ lbpfeat.clear();siftfeat.release();}
 public:
-	std::vector<std::vector<double>> featStore;		//整个特征的存储由数个vector组织起来
-	std::vector<int>	numberPerFeatType;			//每种特征的数量
+	vector<int> lbpfeat;
+	Mat siftfeat;
 };
 
 class CFeature
