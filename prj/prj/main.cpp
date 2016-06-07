@@ -1,12 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-
-#include <cv.h>
 #include <opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
 
 #include "cfeature.h"
 #include "cmodelDemo.h"
@@ -18,7 +13,7 @@ using namespace std;
 using namespace cv;
 
 
-// 将int 转换成string 
+// 将int转换成string 
 string itos(int i)
 { 
 	stringstream s; 
@@ -31,7 +26,7 @@ int main(void)
 	vector<CFeature> featureSet(TRAIN_NUM);	//特征集
 
 	// 1).提取所有图像的特征
-	for(int i=0; i<TRAIN_NUM; i++)
+	for(int i = 0; i < TRAIN_NUM; i++)
 	{
 		Mat img = imread("lena.jpg", IMREAD_GRAYSCALE);
 		ImgWrap imgWrap(&img);					//将img包装起来
