@@ -4,7 +4,7 @@
 #include "cextfeatDemo.h"
 #include "cpreprocessDemo.h"
 
-CFeature::CFeature(ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2)
+CFeature::CFeature(ImgWrap *imgWrapSrc)
 {
 	CPreprocessInt *preprocess=new CPreprocessDemo();
 	CExtfeatInt *extfeat=new CExtfeatDemo();
@@ -12,13 +12,12 @@ CFeature::CFeature(ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2)
 	//预处理
 	if(preprocess)
 	{
-		preprocess->doit(imgWrapSrc1);
-		preprocess->doit(imgWrapSrc2);
+		preprocess->doit(imgWrapSrc);
 	}
 
 	//提取特征
 	if(extfeat)
 	{
-		extfeat->doit(imgWrapSrc1, imgWrapSrc2, &this->mFeatureStore);
+		extfeat->doit(imgWrapSrc, &this->mFeatureStore);
 	}
 }

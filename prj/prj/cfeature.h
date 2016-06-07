@@ -20,7 +20,7 @@ class CFeature
 	/* ctor and de-ctor */
 public:
 	CFeature(){}
-	CFeature(ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2);
+	CFeature(ImgWrap *imgWrapSrc);
 	~CFeature(){}
 
 	/* interface */

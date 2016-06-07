@@ -16,10 +16,10 @@ int main(void)
 	//1).提取所有图像的特征
 	for(int i=0; i<TRAIN_NUM; i++)
 	{
-		int img1 = i, img2 = i+1;
-		ImgWrap imgWrap1(&img1), imgWrap2(&img2);					//将img1 img2包装起来
+		int img = i;
+		ImgWrap imgWrap(&img);					//将img1 img2包装起来
 
-		featureSet[i] = CFeature(new ImgWrap(), new ImgWrap());
+		featureSet[i] = CFeature( &imgWrap );
 
 		/*finish:
 		img1 img2空间释放，所以imgWrap1, imgWrap2中的指针所指会被释放

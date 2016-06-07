@@ -10,11 +10,11 @@ public:
 
 	/* interface */
 public:
-	void doit( ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2, CFeatureStore *featStore ) override;
+	void doit( const ImgWrap *imgWrapSrc, CFeatureStore *featStore ) override;
 
 	/* member fun */
 private:
-	void _do( ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2, CFeatureStore *featStore );
+	void _do( const ImgWrap *imgWrapSrc, CFeatureStore *featStore );
 
 	/* member var */
 private:
