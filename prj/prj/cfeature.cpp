@@ -1,13 +1,13 @@
 
 #include <iostream>
 #include "cfeature.h"
-#include "cextfeatDemo.h"
+#include "cextfeature.h"
 #include "cpreprocessDemo.h"
 
 CFeature::CFeature(ImgWrap *imgWrapSrc)
 {
-	CPreprocessInt *preprocess=new CPreprocessDemo();
-	CExtfeatInt *extfeat=new CExtfeatDemo();
+	CPreprocessInt *preprocess = new CPreprocessDemo();
+	CExtfeatInt *extfeat = new CExtfeature();
 
 	//‘§¥¶¿Ì
 	if(preprocess)
