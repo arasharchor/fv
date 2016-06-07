@@ -22,8 +22,7 @@ int main(void)
 		featureSet[i] = CFeature( &imgWrap );
 
 		/*finish:
-		img1 img2空间释放，所以imgWrap1, imgWrap2中的指针所指会被释放
-		imgWrap1, imgWrap2的空间释放
+		img空间释放，所以imgWrap中的指针所指会被释放
 		至此不需要的内存完全被回收
 		*/
 	}
