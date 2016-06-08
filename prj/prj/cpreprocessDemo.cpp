@@ -10,5 +10,5 @@ void CPreprocessDemo::doit( ImgWrap *imgWrapSrc )
 
 void CPreprocessDemo::_do( ImgWrap *imgWrapSrc)
 {
-	imgWrapSrc->context = NULL;
+	imgWrapSrc->context = imgWrapSrc->context;
 }

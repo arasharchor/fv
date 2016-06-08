@@ -7,7 +7,7 @@
 #include "cmodelDemo.h"
 #include "wrap.h"
 
-static int TRAIN_NUM = 10;			//训练图像个数
+static int TRAIN_NUM = 3;			//训练图像对个数
 
 using namespace std;
 using namespace cv;
@@ -30,8 +30,8 @@ int main(void)
 	{
 		Mat img1 = imread("lena.jpg", IMREAD_GRAYSCALE);
 		Mat img2 = imread("lena.jpg", IMREAD_GRAYSCALE);
-		ImgWrap imgWrap1(&img1);					//将img包装起来
-		ImgWrap imgWrap2(&img2);
+		ImgWrap imgWrap1(&img1), imgWrap2(&img2);
+
 		featureSet[i] = CFeature(&imgWrap1, &imgWrap2);
 
 		/*finish:
