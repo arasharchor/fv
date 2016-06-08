@@ -3,6 +3,7 @@
 
 #include "cfeature.h"
 #include "cmodelDemo.h"
+#include "cmodelSVM.h"
 #include "wrap.h"
 
 static int TRAIN_NUM=10;			//训练图像个数
@@ -28,12 +29,12 @@ int main(void)
 	}
 
 	//2).训练模型
-	CModelInt *model = new CModelDemo();
+	CModelInt *model = new CModelSVM();
 	model->train(featureSet);
-	model->storeModel("modelDemo");
+//	model->saveModel("modelDemo");
 
 	//3).读取模型
-	model->readModel("modelDemo");
+//	model->loadModel("modelDemo");
 
 	return 0;
 }

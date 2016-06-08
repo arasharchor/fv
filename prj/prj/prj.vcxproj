@@ -63,6 +63,7 @@
     <ClCompile Include="cextfeatDemo.cpp" />
     <ClCompile Include="cfeature.cpp" />
     <ClCompile Include="cmodeDemo.cpp" />
+    <ClCompile Include="cmodelSVM.cpp" />
     <ClCompile Include="cpreprocessDemo.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -71,6 +72,7 @@
     <ClInclude Include="cfeature.h" />
     <ClInclude Include="cmodelDemo.h" />
     <ClInclude Include="cmodelInt.h" />
+    <ClInclude Include="cmodelSVM.h" />
     <ClInclude Include="cpreprocessInt.h" />
     <ClInclude Include="cextfeatInt.h" />
     <ClInclude Include="cpreprocessDemo.h" />

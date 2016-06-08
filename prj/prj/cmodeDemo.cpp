@@ -11,12 +11,12 @@ void CModelDemo::train( const vector<CFeature> &feaSet )
 	mModelStore.param.resize(2, 10);
 }
 
-double CModelDemo::similarity( const CFeature &fea1, const CFeature &fea2 )
+double CModelDemo::similarity( const CFeature &fea )
 {
 	return 0;
 }
 
-void CModelDemo::storeModel( string model_file )
+void CModelDemo::saveModel( string model_file )
 {
 	ofstream ofs(model_file);
 	for(int i=0; i<mModelStore.param.size(); i++)
@@ -26,7 +26,7 @@ void CModelDemo::storeModel( string model_file )
 	ofs.close();
 }
 
-void CModelDemo::readModel( string model_file )
+void CModelDemo::loadModel( string model_file )
 {
 	ifstream ifs(model_file);
 	string strBuf;

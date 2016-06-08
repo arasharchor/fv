@@ -1,17 +1,19 @@
-#ifndef __CMODEL_DEMO_H
-#define __CMODEL_DEMO_H
+#ifndef __CMODEL_SVM_H
+#define __CMODEL_SVM_H
 
 #include "cmodelInt.h"
-#include <vector>
 
-class CModelDemoStore
+class CvSVM;
+
+class CModelSVMStore
 {
 public:
-	CModelDemoStore(){ param.clear(); }
-	std::vector<double> param;
+	CModelSVMStore();
+	~CModelSVMStore();
+	CvSVM *SVM;
 };
 
-class CModelDemo : public CModelInt
+class CModelSVM : public CModelInt
 {
 	/* interface */
 public:
@@ -22,7 +24,7 @@ public:
 
 	/* member var */
 private:
-	CModelDemoStore mModelStore;
+	CModelSVMStore mModelStore;
 };
 
 #endif
