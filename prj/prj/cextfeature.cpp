@@ -47,10 +47,13 @@ void CExtfeature::_cextlbp( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 			if (img->at<uchar>(i + 1, j - 1) > img->at<uchar>(i, j))	{ lbpvalue += 64; }	// p6
 			if (img->at<uchar>(i + 0, j - 1) > img->at<uchar>(i, j))	{ lbpvalue += 128;}	// p7
 
-			featImg->lbpfeat[lbpvalue] += 1;		// cumulative
-		}
-	}
-}
+			if (this->utable[lbpvalue] == 1)
+			{
+				featImg->lbpfeat[lbpvalue] += 1;		// cumulative
+			}
+		} // end of for
+	} // end of for
+} // end of function
 
 void CExtfeature::_cextlbp( const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int scale )
 {
@@ -113,10 +116,14 @@ void CExtfeature::_cextlbp( const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int
 			if (mblock[6] >= centblock) { lbpvalue += 64; }
 			if (mblock[7] >= centblock) { lbpvalue += 128;}
 
-			featImg->lbpfeat[lbpvalue] += 1;	// cumulative
-		}
-	}
-}
+			if (this->utable)
+			{
+				featImg->lbpfeat[lbpvalue] += 1;	// cumulative
+			}
+
+		} // end of for
+	} // end of for
+} // end of function
 
 void CExtfeature::_cextsift( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
