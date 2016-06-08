@@ -10,10 +10,20 @@ using namespace cv;
 class ImgWrap;
 
 //特征组织类
-class CFeatureStore
+class CFeatureModel
 {
 public:
-	CFeatureStore(){ lbpfeat.clear();siftfeat.release();}
+	CFeatureModel(){ mixlbp.clear();mixsift.release();}
+public:
+	vector<int> mixlbp;
+	Mat mixsift;
+};
+
+//特征组织类
+class CFeatureImg
+{
+public:
+	CFeatureImg(){ lbpfeat.clear();siftfeat.release();}
 public:
 	vector<int> lbpfeat;
 	Mat siftfeat;
@@ -24,7 +34,7 @@ class CFeature
 	/* ctor and de-ctor */
 public:
 	CFeature(){}
-	CFeature(ImgWrap *imgWrapSrc);
+	CFeature(ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2);
 	~CFeature(){}
 
 	/* interface */
@@ -32,10 +42,12 @@ public:
 
 	/* member fun */
 private:
-
+	void _mixfeature(const CFeatureImg *featImg1, const CFeatureImg *featImg2, CFeatureModel *featMode);
 	/* member var */
 public:
-	CFeatureStore mFeatureStore;
+	CFeatureModel mFeatureMode;
+	CFeatureImg mFeatureImgA;
+	CFeatureImg mFeatureImgB;
 };
 
 #endif 
