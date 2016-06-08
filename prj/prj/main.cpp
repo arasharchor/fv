@@ -15,11 +15,11 @@ using namespace cv;
 
 // 将int转换成string 
 string itos(int i)
-{ 
-	stringstream s; 
-	s << i; 
-	return s.str(); 
-} 
+{
+	stringstream s;
+	s << i;
+	return s.str();
+}
 
 int main(void)
 {
@@ -28,9 +28,11 @@ int main(void)
 	// 1).提取所有图像的特征
 	for(int i = 0; i < TRAIN_NUM; i++)
 	{
-		Mat img = imread("lena.jpg", IMREAD_GRAYSCALE);
-		ImgWrap imgWrap(&img);					//将img包装起来
-		featureSet[i] = CFeature( &imgWrap );
+		Mat img1 = imread("lena.jpg", IMREAD_GRAYSCALE);
+		Mat img2 = imread("lena.jpg", IMREAD_GRAYSCALE);
+		ImgWrap imgWrap1(&img1);					//将img包装起来
+		ImgWrap imgWrap2(&img2);
+		featureSet[i] = CFeature(&imgWrap1, &imgWrap2);
 
 		/*finish:
 		img空间释放，所以imgWrap中的指针所指会被释放
