@@ -3,8 +3,8 @@
 #include <string>
 #include <opencv.hpp>
 
+#include "cmodelSVM.h"
 #include "cfeature.h"
-#include "cmodelDemo.h"
 #include "wrap.h"
 
 static int TRAIN_NUM = 3;			//训练图像对个数
@@ -40,12 +40,12 @@ int main(void)
 		*/
 	}
 	//2).训练模型
-	CModelInt *model = new CModelDemo();
+	CModelInt *model = new CModelSVM();
 	model->train(featureSet);
-	model->storeModel("modelDemo");
+//	model->saveModel("modelSvm");
 
 	//3).读取模型
-	model->readModel("modelDemo");
+//	model->loadModel("modelSvm");
 
 	return 0;
 }
