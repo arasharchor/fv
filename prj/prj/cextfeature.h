@@ -10,15 +10,15 @@ public:
 
 	/* interface */
 public:
-	void doit( const ImgWrap *imgWrapSrc, CFeatureStore *featStore ) override;
+	void doit( const ImgWrap *imgWrapSrc, CFeatureImg *featImg ) override;
 	/* member fun */
 private:
-	void _do( const ImgWrap *imgWrapSrc, CFeatureStore *featStore );
-	void _cextlbp(const ImgWrap *imgWrapSrc, CFeatureStore *featStore);				// lbp
-	void _cextlbp(const ImgWrap *imgWrapSrc, CFeatureStore *featStore, int scale);		// mb-lbp
+	void _do( const ImgWrap *imgWrapSrc, CFeatureImg *featImg );
 
-	void _cextsift(const ImgWrap *imgWrapSrc, CFeatureStore *featStore);				// sift
+	void _cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg);				// lbp
+	void _cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int scale);		// mb-lbp
 
+	void _cextsift(const ImgWrap *imgWrapSrc, CFeatureImg *featImg);				// sift
 	/* member var */
 private:
 };
