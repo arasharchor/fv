@@ -9,19 +9,19 @@
 using namespace std;
 using namespace cv;
 
-void CExtfeature::doit( const ImgWrap *imgWrapSrc, CFeatureStore *featStore )
+void CExtfeature::doit( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
-	_do(imgWrapSrc, featStore);
+	_do(imgWrapSrc, featImg);
 }
 
-void CExtfeature::_do( const ImgWrap *imgWrapSrc, CFeatureStore *featStore )
+void CExtfeature::_do( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
-	_cextlbp(imgWrapSrc, featStore);
+	_cextlbp(imgWrapSrc, featImg);
 	//_cextlbp(imgWrapSrc, featStore, 5);
-	_cextsift(imgWrapSrc, featStore);
+	_cextsift(imgWrapSrc, featImg);
 }
 
-void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureStore *featStore)
+void CExtfeature::_cextlbp( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
 	Mat *img = (Mat *)imgWrapSrc->context;
 	assert(img->channels() == 1);	//single channel
@@ -31,7 +31,7 @@ void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureStore *featStore)
 	// p0	p1	p2
 	// p7	x	p3
 	// p6	p5	p4
-	featStore->lbpfeat.resize(256);	// lbp feature (histogram of lbp image)
+	featImg->lbpfeat.resize(256);	// lbp feature (histogram of lbp image)
 	for (int i = 1; i < row - 1; ++i)
 	{
 		for (int j = 1; j < col - 1; ++j)
@@ -47,12 +47,12 @@ void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureStore *featStore)
 			if (img->at<uchar>(i + 1, j - 1) > img->at<uchar>(i, j))	{ lbpvalue += 64; }	// p6
 			if (img->at<uchar>(i + 0, j - 1) > img->at<uchar>(i, j))	{ lbpvalue += 128;}	// p7
 
-			featStore->lbpfeat[lbpvalue] += 1;		// cumulative	
+			featImg->lbpfeat[lbpvalue] += 1;		// cumulative
 		}
 	}
 }
 
-void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureStore *featStore, int scale)
+void CExtfeature::_cextlbp( const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int scale )
 {
 	Mat *img = (Mat *)imgWrapSrc->context;
 	assert(img->channels() == 1);	//single channel
@@ -60,7 +60,7 @@ void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureStore *featStore, 
 	Mat imgIntegral;
 	integral(*img, imgIntegral);
 	
-	featStore->lbpfeat.resize(256);	// mb-lbp feature (histogram of mb-lbp image)
+	featImg->lbpfeat.resize(256);	// mb-lbp feature (histogram of mb-lbp image)
 	// mb0		mb1		mb2
 	// mb7	  center	mb3
 	// mb6		mb5		mb4
@@ -113,18 +113,23 @@ void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureStore *featStore, 
 			if (mblock[6] >= centblock) { lbpvalue += 64; }
 			if (mblock[7] >= centblock) { lbpvalue += 128;}
 
-			featStore->lbpfeat[lbpvalue] += 1;	// cumulative	
+			featImg->lbpfeat[lbpvalue] += 1;	// cumulative
 		}
 	}
 }
 
-void CExtfeature::_cextsift(const ImgWrap *imgWrapSrc, CFeatureStore *featStore)
+void CExtfeature::_cextsift( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
 	Mat *img = (Mat *)imgWrapSrc->context;
-	assert(img->channels() == 1);//single channel
+	assert(img->channels() == 1);	//single channel
 	vector<KeyPoint> keypoint;
 	Mat des, mask;
 
 	SIFT sift;
-	sift(*img, mask, keypoint, featStore->siftfeat);
+	sift(*img, mask, keypoint, featImg->siftfeat);
+}
+
+void CFeature::_mixfeature( const CFeatureImg *featImg1, const CFeatureImg *featImg2, CFeatureModel *featMode )
+{
+	// ...
 }
