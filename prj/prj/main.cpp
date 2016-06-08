@@ -39,6 +39,7 @@ int main(void)
 		至此不需要的内存完全被回收
 		*/
 	}
+	
 	//2).训练模型
 	CModelInt *model = new CModelSVM();
 	model->train(featureSet);
