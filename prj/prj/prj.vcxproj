@@ -60,14 +60,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="cextfeatDemo.cpp" />
+    <ClCompile Include="cextfeature.cpp" />
     <ClCompile Include="cfeature.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="cmodelSVM.cpp" />
+=======
+    <ClCompile Include="cmodelDemo.cpp" />
+>>>>>>> lsj
     <ClCompile Include="cpreprocessDemo.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cextfeatDemo.h" />
+    <ClInclude Include="cextfeature.h" />
     <ClInclude Include="cfeature.h" />
     <ClInclude Include="cmodelInt.h" />
     <ClInclude Include="cmodelSVM.h" />

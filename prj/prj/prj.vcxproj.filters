@@ -48,10 +48,14 @@
     <ClCompile Include="cpreprocessDemo.cpp">
       <Filter>源文件\feature\preprocess</Filter>
     </ClCompile>
-    <ClCompile Include="cextfeatDemo.cpp">
+    <ClCompile Include="cextfeature.cpp">
       <Filter>源文件\feature\extfeat</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="cmodelSVM.cpp">
+=======
+    <ClCompile Include="cmodelDemo.cpp">
+>>>>>>> lsj
       <Filter>源文件\model</Filter>
     </ClCompile>
   </ItemGroup>
@@ -61,9 +65,6 @@
     </ClInclude>
     <ClInclude Include="cpreprocessDemo.h">
       <Filter>头文件\feature\prerocess</Filter>
-    </ClInclude>
-    <ClInclude Include="cextfeatDemo.h">
-      <Filter>头文件\feature\extfeat</Filter>
     </ClInclude>
     <ClInclude Include="cfeature.h">
       <Filter>头文件\feature</Filter>
@@ -79,6 +80,9 @@
     </ClInclude>
     <ClInclude Include="cmodelSVM.h">
       <Filter>头文件\model</Filter>
+    </ClInclude>
+    <ClInclude Include="cextfeature.h">
+      <Filter>头文件\feature\extfeat</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

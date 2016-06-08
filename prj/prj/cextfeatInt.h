@@ -8,7 +8,7 @@ class CExtfeatInt
 {
 	/* interface */
 public:
-	virtual void doit( const ImgWrap *imgWrapSrc, CFeatureStore *featStore)=0;
+	virtual void doit( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )=0;
 };
 
 #endif
