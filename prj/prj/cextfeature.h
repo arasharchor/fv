@@ -7,7 +7,6 @@ class CExtfeature : public CExtfeatInt
 {
 	/* ctor and de-ctor */
 public:
-
 	/* interface */
 public:
 	void doit( const ImgWrap *imgWrapSrc, CFeatureImg *featImg ) override;
