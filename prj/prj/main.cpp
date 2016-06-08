@@ -2,7 +2,6 @@
 #include <vector>
 
 #include "cfeature.h"
-#include "cmodelDemo.h"
 #include "cmodelSVM.h"
 #include "wrap.h"
 

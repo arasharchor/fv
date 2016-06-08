@@ -51,9 +51,6 @@
     <ClCompile Include="cextfeatDemo.cpp">
       <Filter>源文件\feature\extfeat</Filter>
     </ClCompile>
-    <ClCompile Include="cmodeDemo.cpp">
-      <Filter>源文件\model</Filter>
-    </ClCompile>
     <ClCompile Include="cmodelSVM.cpp">
       <Filter>源文件\model</Filter>
     </ClCompile>
@@ -78,9 +75,6 @@
       <Filter>头文件\feature\prerocess</Filter>
     </ClInclude>
     <ClInclude Include="cmodelInt.h">
-      <Filter>头文件\model</Filter>
-    </ClInclude>
-    <ClInclude Include="cmodelDemo.h">
       <Filter>头文件\model</Filter>
     </ClInclude>
     <ClInclude Include="cmodelSVM.h">

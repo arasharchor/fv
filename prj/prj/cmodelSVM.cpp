@@ -1,4 +1,6 @@
 #include "cmodelSVM.h"
+#include "cfeature.h"
+#include <vector>
 
 #include <opencv2\ml\ml.hpp>
 #include <opencv2\core\core.hpp>
@@ -23,7 +25,7 @@ void CModelSVM::train(const std::vector<CFeature> &feaSet)
 	params.term_crit = cvTermCriteria(CV_TERMCRIT_ITER, int(1e7), 1e-6);
 
 	//---------------------------------2. train--------------------------------------------------
-	mModelStore.SVM->train(trainData, labels, Mat(), Mat(), params);
+//	mModelStore.SVM->train(trainData, labels, Mat(), Mat(), params);
 }
 
 double CModelSVM::similarity(const CFeature &feat)
