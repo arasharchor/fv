@@ -3,5 +3,10 @@
 /prj/ipch
 /prj/*.sdf
 /prj/*.suo
+/prj/*.sln
+
 
 /prj/prj/Debug
+/prj/prj/*.vcxproj
+/prj/prj/*.filters
+/prj/prj/*.user
