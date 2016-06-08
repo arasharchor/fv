@@ -2,13 +2,18 @@
 #define __CEXT_FEAT_INT_H
 
 class ImgWrap;
-class CFeatureStore;
+class CFeatureImg;
 
 class CExtfeatInt
 {
 	/* interface */
 public:
+	CExtfeatInt();
 	virtual void doit( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )=0;
+
+	/* var member */
+public:
+	int *utable;
 };
 
 #endif
