@@ -5,6 +5,7 @@
 #include "wrap.h"
 
 #include <opencv2/nonfree/nonfree.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 using namespace std;
 using namespace cv;
@@ -19,6 +20,7 @@ void CExtfeature::_do( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 	_cextlbp(imgWrapSrc, featImg);
 	//_cextlbp(imgWrapSrc, featStore, 5);
 	_cextsift(imgWrapSrc, featImg);
+	_cextgabor(imgWrapSrc, featImg);
 }
 
 void CExtfeature::_cextlbp( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
@@ -135,6 +137,86 @@ void CExtfeature::_cextsift( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 	SIFT sift;
 	sift(*img, mask, keypoint, featImg->siftfeat);
 }
+
+// ¦Õ_uv(z) = (|K_uv| ^ 2 / (sigma ^ 2)) * exp(-(|K_uv|^2 * |z|^2) / (2 * sigma^2)) * (exp(i * K_uv) - exp(-sigma^2 / 2))
+// K_uv = K_v * exp(i * Phi_u)		//Phi_u ---> ¦Õ_u
+// K_v = K_max / (f ^ v)
+// Phi_u = u * pi / 8
+// K_max = pi / 2
+// f = sqrt(2)
+// sigma = 2 * pi
+void CExtfeature::_cextgabor( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
+{
+	Mat *imgSrc = (Mat *)imgWrapSrc->context;
+	assert(img->channels() == 1);				//single channel
+
+	double sigma = 2 * CV_PI;
+	double f = sqrt(2.0);
+	double K_max = CV_PI / 2;
+
+	for (int v = 0; v < 5; ++v)					// scale
+	{
+		for (int u = 0; u < 8; ++u)				// orientation
+		{
+			int mask_width = cvRound(6 * sigma * pow(f, v) / K_max) + 1;	//width of gabor filter
+			double Phi_u = CV_PI * u / 8;
+			double K_v = K_max / pow(f, v);	
+
+			Mat imgMaskReal = Mat::zeros(mask_width, mask_width, CV_32FC1);
+			Mat imgMaskIm = Mat::zeros(mask_width, mask_width, CV_32FC1);
+
+			Mat imgReal, imgIm, imgMac;
+
+			for (int i = 0; i < mask_width; ++i)
+			{
+				for (int j = 0; j < mask_width; ++j)
+				{
+					int x = i - (mask_width - 1) / 2;	// offset
+					int y = j - (mask_width - 1) / 2;
+
+					double K_uv = K_v * (cos(Phi_u) * x + sin(Phi_u) * y);
+					double part1 = ((K_v * K_v) / (sigma * sigma)) * exp(-(K_v * K_v) * (x * x + y * y) / (2 * sigma * sigma));
+					double part2 = cos(K_uv) - exp(-sigma * sigma / 2);
+					double part3 = sin(K_uv);
+
+					double realPart = part1 * part2;	// real part
+					double imPart = part1 * part3;		// imaginary part
+
+					imgMaskReal.at<float>(i, j) = realPart;
+					imgMaskIm.at<float>(i, j) = imPart;
+				}
+			}
+
+#define GABOR_MODE 0
+
+#if GABOR_MODE == 1
+			filter2D(*imgSrc, imgReal, CV_32F, imgMaskReal, Point((mask_width - 1) / 2, (mask_width - 1) / 2));		// real filter
+			Mat imgDst(imgReal);
+#elif GABOR_MODE == 2
+			filter2D(*imgSrc, imgIm, CV_32F, imgMaskIm, Point((mask_width - 1) / 2, (mask_width - 1) / 2));			// imaginary filter
+			Mat imgDst(imgIm);
+#else
+			// magnitude filter
+			filter2D(*imgSrc, imgReal, CV_32F, imgMaskReal, Point((mask_width - 1) / 2, (mask_width - 1) / 2));
+			filter2D(*imgSrc, imgIm, CV_32F, imgMaskIm, Point((mask_width - 1) / 2, (mask_width - 1) / 2));
+
+			cv::pow(imgReal, 2, imgReal);
+			cv::pow(imgIm, 2, imgIm);
+			cv::add(imgReal, imgIm, imgMac);
+			cv::pow(imgMac, 0.5, imgMac);
+			Mat imgDst(imgMac);
+#endif
+			Mat imgGabor;
+			normalize(imgDst, imgDst, 255, 0, NORM_MINMAX);	// normalize value of pixel from 0 to 255
+			convertScaleAbs(imgDst, imgGabor, 1, 0 );		// 8-bit unsigned integers
+
+			featImg->gaborfeat.push_back(imgGabor);			// push back the gabor feature
+
+			//imshow("gabor response", imgGabor); waitKey(0);	// show the image
+
+		} // end of for
+	} // end of for
+} // end of function
 
 void CFeature::_mixfeature( const CFeatureImg *featImg1, const CFeatureImg *featImg2, CFeatureModel *featMode )
 {
