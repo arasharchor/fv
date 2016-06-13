@@ -17,6 +17,7 @@ public:
 public:
 	vector<int> mixlbp;
 	Mat mixsift;
+	vector<Mat> gaborfeat;
 };
 
 //特征组织类
@@ -27,6 +28,7 @@ public:
 public:
 	vector<int> lbpfeat;
 	Mat siftfeat;
+	vector<Mat> gaborfeat;
 };
 
 class CFeature
