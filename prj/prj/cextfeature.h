@@ -18,6 +18,8 @@ private:
 	void _cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int scale);		// mb-lbp
 
 	void _cextsift(const ImgWrap *imgWrapSrc, CFeatureImg *featImg);				// sift
+
+	void _cextgabor(const ImgWrap *imgWrapSrc, CFeatureImg *featImg);				// gabor
 	/* member var */
 private:
 };
