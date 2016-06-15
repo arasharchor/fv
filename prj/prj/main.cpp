@@ -28,8 +28,9 @@ int main(void)
 	// 1).提取所有图像的特征
 	for(int i = 0; i < TRAIN_NUM; i++)
 	{
-		Mat img1 = imread("ORL//s1//1.pgm", IMREAD_GRAYSCALE);
-		Mat img2 = imread("ORL//s1//2.pgm", IMREAD_GRAYSCALE);
+		Mat img1 = imread("lena.jpg", IMREAD_GRAYSCALE);
+		Mat img2 = imread("lena.jpg", IMREAD_GRAYSCALE);
+
 		ImgWrap imgWrap1(&img1), imgWrap2(&img2);
 
 		featureSet[i] = CFeature(&imgWrap1, &imgWrap2);

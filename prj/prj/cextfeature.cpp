@@ -148,7 +148,7 @@ void CExtfeature::_cextsift( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 void CExtfeature::_cextgabor( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
 	Mat *imgSrc = (Mat *)imgWrapSrc->context;
-	assert(img->channels() == 1);				//single channel
+	assert(imgSrc->channels() == 1);				//single channel
 
 	double sigma = 2 * CV_PI;
 	double f = sqrt(2.0);

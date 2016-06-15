@@ -7,6 +7,7 @@ class CPreprocessInt
 {
 	/* interface */
 public:
+//	CPreprocessInt();
 	virtual void doit( ImgWrap *imgWrapSrc )=0;
 };
 
