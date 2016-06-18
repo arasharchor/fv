@@ -134,5 +134,5 @@ void CPreprocess::_drawFaceImage(Mat img, Rect largestObject)
 {
 	rectangle(img, largestObject, Scalar(255,0,0));  
 	imshow("face",img);
-	waitKey(0);
+	waitKey(5000);
 }
