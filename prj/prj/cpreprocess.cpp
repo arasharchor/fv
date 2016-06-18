@@ -1,10 +1,12 @@
 
 #include <iostream>
+#include <vector>
+
 #include <opencv.hpp>
 #include <opencv2/core/core.hpp>
-#include "cpreprocess.h"
+
 #include "wrap.h"
-#include <vector>
+#include "cpreprocess.h"
 
 using namespace cv;
 using namespace std;
