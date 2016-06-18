@@ -36,12 +36,12 @@ int main(void)
 		coupleImgDataSet.extCoupleImg_path(img1_path, img2_path, i, true);		// 第i对正样本
 		//coupleImgDataSet.extCoupleImg_path(img1_path, img2_path, i, false);		// 第i对负样本
 
-		//Mat img1 = imread(img1_path, IMREAD_GRAYSCALE);
-		//Mat img2 = imread(img2_path, IMREAD_GRAYSCALE);
+		Mat img1 = imread(img1_path, IMREAD_GRAYSCALE);
+		Mat img2 = imread(img2_path, IMREAD_GRAYSCALE);
 
-		//ImgWrap imgWrap1(&img1), imgWrap2(&img2);
+		ImgWrap imgWrap1(&img1), imgWrap2(&img2);
 
-		//featureSet[i] = CFeature(&imgWrap1, &imgWrap2);
+		featureSet[i] = CFeature(&imgWrap1, &imgWrap2);
 
 		/*finish:
 		img空间释放，所以imgWrap中的指针所指会被释放
