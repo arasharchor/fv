@@ -10,6 +10,34 @@
 using namespace std;
 using namespace cv;
 
+#include <memory>
+#include "cextfeatInt.h"
+
+CExtfeature::CExtfeature()
+{
+	// table of the uniform mode
+	const int tmp[58] = 
+	{	
+		//  1   2	  3	   4	5	 6	  7			number of zero
+		127, 63,  31,  15,  7,   3,   1,
+		191, 159, 143, 135, 131, 129, 128,
+		223, 207, 199, 195, 193, 192, 64,
+		239, 231, 227, 225, 224, 96,  32,
+		247, 243, 241, 240, 112, 48,  16,
+		251, 249, 248, 120, 56,  24,  8,
+		253, 252, 124, 60,  28,  12,  4,
+		254, 126, 62,  30,  14,  6,   2,
+		//  0   8
+		255, 0
+	};
+	utable = new int[256];
+	memset(utable, 0, 256 * sizeof(int));
+	for (int i = 0; i < 58; ++i)
+	{
+		utable[tmp[i]] = 1;
+	}
+}
+
 void CExtfeature::doit( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
 	_do(imgWrapSrc, featImg);
@@ -162,8 +190,8 @@ void CExtfeature::_cextgabor( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 			double Phi_u = CV_PI * u / 8;
 			double K_v = K_max / pow(f, v);	
 
-			Mat imgMaskReal = Mat::zeros(mask_width, mask_width, CV_32FC1);
-			Mat imgMaskIm = Mat::zeros(mask_width, mask_width, CV_32FC1);
+			Mat imgMaskReal = Mat::zeros(mask_width, mask_width, CV_64FC1);
+			Mat imgMaskIm = Mat::zeros(mask_width, mask_width, CV_64FC1);
 
 			Mat imgReal, imgIm, imgMac;
 
@@ -182,8 +210,8 @@ void CExtfeature::_cextgabor( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 					double realPart = part1 * part2;	// real part
 					double imPart = part1 * part3;		// imaginary part
 
-					imgMaskReal.at<float>(i, j) = realPart;
-					imgMaskIm.at<float>(i, j) = imPart;
+					imgMaskReal.at<double>(i, j) = realPart;
+					imgMaskIm.at<double>(i, j) = imPart;
 				}
 			}
 
@@ -217,8 +245,3 @@ void CExtfeature::_cextgabor( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 		} // end of for
 	} // end of for
 } // end of function
-
-void CFeature::_mixfeature( const CFeatureImg *featImg1, const CFeatureImg *featImg2, CFeatureModel *featMode )
-{
-	// ...
-}

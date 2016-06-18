@@ -15,6 +15,7 @@ class CFeatureModel
 public:
 	CFeatureModel(){ mixlbp.clear();mixsift.release();}
 public:
+	vector<double> mixfeat;
 	vector<int> mixlbp;
 	Mat mixsift;
 	vector<Mat> gaborfeat;
@@ -30,7 +31,6 @@ public:
 	Mat siftfeat;
 	vector<Mat> gaborfeat;
 };
-
 class CFeature
 {
 	/* ctor and de-ctor */
@@ -44,7 +44,7 @@ public:
 
 	/* member fun */
 private:
-	void _mixfeature(const CFeatureImg *featImg1, const CFeatureImg *featImg2, CFeatureModel *featMode);
+	void _mixedfeature(const CFeatureImg *featImg1, const CFeatureImg *featImg2, CFeatureModel *featMode);
 	/* member var */
 public:
 	CFeatureModel mFeatureMode;
