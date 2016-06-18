@@ -12,7 +12,7 @@ using namespace std;
 CPreprocess::CPreprocess()
 {
 	//_do(imgWrapSrc);
-	classifier = new CascadeClassifier("F:\\f\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt2.xml");
+	classifier = new CascadeClassifier("haarcascade_frontalface_alt2.xml");
 	scaledWidth = 320;
 	flags = CASCADE_FIND_BIGGEST_OBJECT;
 	minFeatureSize = Size(20, 20);
@@ -29,6 +29,8 @@ void CPreprocess::_do( ImgWrap *imgWrapSrc)//void CPreprocess::_do(const Mat &im
 {
 	//Ìí¼Óº¯Êý
 	Mat *img = (Mat *)imgWrapSrc->context;
+
+//	imshow("img", *img);cvWaitKey(0);
 	_detectObjectsCustom(*img, *classifier, objects, scaledWidth, flags, minFeatureSize, searchScaleFactor, minNeighbors);
 	_drawFaceImage(*img, objects);
 	//_detectLargestObject(*img, *classifier, largestObject, scaledWidth);
