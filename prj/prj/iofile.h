@@ -4,10 +4,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <io.h>
 
 typedef struct{
-	string path1;
-	string path2;
+	std::string path1;
+	std::string path2;
 }imgPath;
 
 class iofile
@@ -19,16 +20,16 @@ public:
 	void negCoupleImg_org();	// 组织负样本对
 	void extCoupleImg_path();	// 提取正、负样本对路径
 
-	void extCoupleImg_path(string &path1, string &path2, int nth, bool type);
+	void extCoupleImg_path(std::string &path1, std::string &path2, int nth, bool type);
 
 private:
 	int N;						// N个人
 	int M;						// 每个人M张人脸图像
 	int posCoupleSize;
 	int negCoupleSize;
-	vector<imgPath> posImg;		// 正样本图像对路径
-	vector<imgPath> negImg;		// 负样本图像对路径
-	vector<string> allPath;		// 所有图像的路径
+	std::vector<imgPath> posImg;			// 正样本图像对路径
+	std::vector<imgPath> negImg;			// 负样本图像对路径
+	std::vector<std::string> allPath;		// 所有图像的路径
 };
 
 iofile::iofile(int n, int m)
@@ -43,10 +44,13 @@ iofile::iofile(int n, int m)
 void iofile::coupleImg_org()
 {
 	// 列出所有图像的路径
-	system("dir ORL\\*.pgm /a-d /o-n /b /s >pathFile.simple");
+	if (_access("pathFile.simple", 0) == -1)
+	{	// doesn't exist this file
+		system("dir ORL\\*.pgm /a-d /o-n /b /s >pathFile.simple");
+	}
 
-	string str;
-	ifstream pathFile("pathFile.simple");
+	std::string str;
+	std::ifstream pathFile("pathFile.simple");
 	while(!pathFile.eof())
 	{
 		getline(pathFile, str);
@@ -60,17 +64,21 @@ void iofile::coupleImg_org()
 
 void iofile::posCoupleImg_org()
 {	
-	// 正样本
-	ofstream posFile("coupleFace.positive");
+	if (_access("coupleFace.positive", 0) != -1)
+	{	// exist this file
+		return;
+	}
 
-	posFile << posCoupleSize << endl;
+	// 正样本
+	std::ofstream posFile("coupleFace.positive");
+	posFile << posCoupleSize << std::endl;
 	for (int k = 0; k < N; ++k)
 	{
 		for (int i = 0; i < M; ++i)
 		{
 			for (int j = i + 1; j < M; ++j)
 			{
-				posFile << i + k * M << '\t' << j + k * M << endl;
+				posFile << i + k * M << '\t' << j + k * M << std::endl;
 			}
 		}
 	}
@@ -79,16 +87,21 @@ void iofile::posCoupleImg_org()
 
 void iofile::negCoupleImg_org()
 {
-	// 负样本
-	ofstream negFile("coupleFace.negative");
+	if (_access("coupleFace.negative", 0) != -1)
+	{	// exist this file
+		return;
+	}
 
-	negFile << negCoupleSize << endl;
+	// 负样本
+	std::ofstream negFile("coupleFace.negative");
+
+	negFile << negCoupleSize << std::endl;
 	for (int i = 0; i < (N - 1) * M; ++i)
 	{
 		int k = i / M + 1;
 		for (int j = k * M; j < N * M; ++j)
 		{
-			negFile << i << '\t' << j << endl;
+			negFile << i << '\t' << j << std::endl;
 		}
 	}
 	negFile.close();
@@ -96,7 +109,7 @@ void iofile::negCoupleImg_org()
 
 void iofile::extCoupleImg_path()
 {
-	ifstream posFile("coupleFace.positive");
+	std::ifstream posFile("coupleFace.positive");
 	int num1 = 0;
 	posFile >> num1;
 	while(num1--)
@@ -110,7 +123,7 @@ void iofile::extCoupleImg_path()
 	}
 	posFile.close();
 
-	ifstream negFile("coupleFace.negative");
+	std::ifstream negFile("coupleFace.negative");
 	int num2 = 0;
 	negFile >> num2;
 	while(num2--)
@@ -125,14 +138,14 @@ void iofile::extCoupleImg_path()
 	negFile.close();
 }
 
-void iofile::extCoupleImg_path(string &path1, string &path2, int nth, bool type)
+void iofile::extCoupleImg_path(std::string &path1, std::string &path2, int nth, bool type)
 {
-	string coupleImg_path;
+	std::string coupleImg_path;
 
 	if (type)	coupleImg_path = "coupleFace.positive";
 	else		coupleImg_path = "coupleFace.negative";
 
-	ifstream pnFile(coupleImg_path);
+	std::ifstream pnFile(coupleImg_path);
 	int index1 = 0, index2 = 0;
 	do
 	{
@@ -142,7 +155,5 @@ void iofile::extCoupleImg_path(string &path1, string &path2, int nth, bool type)
 	path2 = allPath[index2];
 }
 
-
-
-
 #endif
+
