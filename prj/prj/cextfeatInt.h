@@ -6,6 +6,10 @@ class CFeatureImg;
 
 class CExtfeatInt
 {
+	/* ctor and de-ctor */
+public:
+	virtual ~CExtfeatInt(){}
+
 	/* interface */
 public:
 	virtual void doit( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )=0;

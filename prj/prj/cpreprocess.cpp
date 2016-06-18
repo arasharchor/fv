@@ -30,9 +30,8 @@ void CPreprocess::_do( ImgWrap *imgWrapSrc)//void CPreprocess::_do(const Mat &im
 	//Ìí¼Óº¯Êý
 	Mat *img = (Mat *)imgWrapSrc->context;
 
-//	imshow("img", *img);cvWaitKey(0);
 	_detectObjectsCustom(*img, *classifier, objects, scaledWidth, flags, minFeatureSize, searchScaleFactor, minNeighbors);
-	_drawFaceImage(*img, objects);
+	//_drawFaceImage(*img, objects);
 	//_detectLargestObject(*img, *classifier, largestObject, scaledWidth);
 	//_drawFaceImage(*img, largestObject);
 }

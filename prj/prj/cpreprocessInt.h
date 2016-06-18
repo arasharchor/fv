@@ -5,9 +5,12 @@ class ImgWrap;
 
 class CPreprocessInt
 {
+	/* ctor and de-ctor */
+public:
+	virtual ~CPreprocessInt(){}
+
 	/* interface */
 public:
-//	CPreprocessInt();
 	virtual void doit( ImgWrap *imgWrapSrc )=0;
 };
 

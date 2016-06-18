@@ -8,6 +8,10 @@ class CFeature;
 
 class CModelInt
 {
+	/* ctor and de-ctor */
+public:
+	virtual ~CModelInt(){}
+
 	/* interface */
 public:
 	virtual void train( const std::vector<CFeature> &feaSet )=0;					//输入特征集，训练模型
