@@ -9,6 +9,7 @@ class CExtfeature : public CExtfeatInt
 public:
 	/* interface */
 public:
+	CExtfeature();
 	void doit( const ImgWrap *imgWrapSrc, CFeatureImg *featImg ) override;
 	/* member fun */
 private:
@@ -22,6 +23,7 @@ private:
 	void _cextgabor(const ImgWrap *imgWrapSrc, CFeatureImg *featImg);				// gabor
 	/* member var */
 private:
+	int *utable;
 };
 
 #endif
