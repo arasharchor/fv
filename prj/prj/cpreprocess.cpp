@@ -12,7 +12,7 @@ using namespace std;
 CPreprocess::CPreprocess()
 {
 	//_do(imgWrapSrc);
-	classifier = new CascadeClassifier("F:\\f\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt2.xml");
+	classifier = new CascadeClassifier("haarcascade_frontalface_alt2.xml");
 	scaledWidth = 320;
 	flags = CASCADE_FIND_BIGGEST_OBJECT;
 	minFeatureSize = Size(20, 20);
@@ -34,7 +34,7 @@ void CPreprocess::_do( ImgWrap *imgWrapSrc)//void CPreprocess::_do(const Mat &im
 	//_detectLargestObject(*img, *classifier, largestObject, scaledWidth);
 	//_drawFaceImage(*img, largestObject);
 }
-void CPreprocess::_detectObjectsCustom(const Mat &img, CascadeClassifier &cascade, vector<Rect> &objects, int scaledWidth, int flags, Size minFeatureSize, float searchScaleFactor, int minNeighbors)
+void CPreprocess::_detectObjectsCustom(Mat &img, CascadeClassifier &cascade, vector<Rect> &objects, int scaledWidth, int flags, Size minFeatureSize, float searchScaleFactor, int minNeighbors)
 {
     //将彩色图像转化为灰度
     Mat gray;
@@ -95,22 +95,15 @@ void CPreprocess::_detectObjectsCustom(const Mat &img, CascadeClassifier &cascad
         if (objects[i].y + objects[i].height > img.rows)
             objects[i].y = img.rows - objects[i].height;
     }
-
+	img = img(objects[0]);
     // Return with the detected face rectangles stored in "objects".
 }
 
-void CPreprocess::_detectLargestObject(const Mat &img, CascadeClassifier &cascade, Rect &largestObject, int scaledWidth)
+void CPreprocess::_detectLargestObject(Mat &img, CascadeClassifier &cascade, Rect &largestObject, int scaledWidth)
 {
     // 只检测图像中最大的目标人脸 
     int flags = CASCADE_FIND_BIGGEST_OBJECT;// | CASCADE_DO_ROUGH_SEARCH;
-    //最小目标人脸的尺寸.
-    Size minFeatureSize = Size(20, 20);
-    // 固定公式，为了检测到更多的细节参数应该大于1.0
-    float searchScaleFactor = 1.1f;
-    int minNeighbors = 4;
 
-    // 执行检测程序
-    vector<Rect> objects;
     _detectObjectsCustom(img, cascade, objects, scaledWidth, flags, minFeatureSize, searchScaleFactor, minNeighbors);
     if (objects.size() > 0) 
 	{
@@ -121,18 +114,19 @@ void CPreprocess::_detectLargestObject(const Mat &img, CascadeClassifier &cascad
 	{
         largestObject = Rect(-1,-1,-1,-1);
     }
+	img = img(largestObject);
 }
 //具体实现函数
 
-void CPreprocess::_drawFaceImage(Mat img, vector<Rect> objects)
+void CPreprocess::_drawFaceImage(const Mat img, vector<Rect> objects)
 {
-	rectangle(img, objects[0], Scalar(255,0,0));  
+//	rectangle(img, objects[0], Scalar(255,0,0));  
 	imshow("face",img);
 	waitKey(0);
 }
-void CPreprocess::_drawFaceImage(Mat img, Rect largestObject)
+void CPreprocess::_drawFaceImage(const Mat img, Rect largestObject)
 {
-	rectangle(img, largestObject, Scalar(255,0,0));  
+//	rectangle(img, largestObject, Scalar(255,0,0));  
 	imshow("face",img);
-	waitKey(5000);
+	waitKey(0);
 }

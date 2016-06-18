@@ -25,11 +25,11 @@ public:
 private:
 	void _do( ImgWrap *imgWrapSrc);
 
-	void _detectObjectsCustom(const  Mat &img, CascadeClassifier &cascade, vector<Rect> &objects, int scaledWidth, int flags, Size minFeatureSize, float searchScaleFactor, int minNeighbors);
-	void _detectLargestObject(const  Mat &img, CascadeClassifier &cascade, Rect &largestObject, int scaledWidth = 320);//寻找一个图像的特征
+	void _detectObjectsCustom(Mat &img, CascadeClassifier &cascade, vector<Rect> &objects, int scaledWidth, int flags, Size minFeatureSize, float searchScaleFactor, int minNeighbors);
+	void _detectLargestObject(Mat &img, CascadeClassifier &cascade, Rect &largestObject, int scaledWidth = 320);//寻找一个图像的特征
 	//void _detectManyObjects(const ImgWrap *imgWrapSrc, CascadeClassifier &cascade, vector<Rect> &objects, int scaledWidth = 320);//寻找多个图像的特征
-	void _drawFaceImage(Mat img, vector<Rect> objects);
-	void _drawFaceImage(Mat img, Rect largestObject);
+	void _drawFaceImage(const Mat img, vector<Rect> objects);
+	void _drawFaceImage(const Mat img, Rect largestObject);
 	//添加函数；
 	/* member var */
 private:
