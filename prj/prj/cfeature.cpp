@@ -8,6 +8,10 @@
 #include "cpreprocess.h"
 
 
+using namespace std;
+using namespace cv;
+
+
 CFeature::CFeature(ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2)
 {
 	CPreprocessInt *preprocess = new CPreprocess();
@@ -39,7 +43,7 @@ void CFeature::_mixedfeature( const CFeatureImg *featImg1, const CFeatureImg *fe
 	{
 		lbpDistance += (feat1[i] - feat2[i]) * (feat1[i] - feat2[i]);
 	}
-	lbpDistance = sqrt(lbpDistance) / 57;
+	lbpDistance = sqrt(lbpDistance) / 58;
 	featMode->mixfeat.push_back(lbpDistance);
 
 	// for sift feature
