@@ -10,10 +10,10 @@ public:
 	/* interface */
 public:
 	CExtfeature();
-	void doit( const ImgWrap *imgWrapSrc, CFeatureImg *featImg ) override;
+	void doit(const ImgWrap *imgWrapSrc, CFeatureImg *featImg) override;
 	/* member fun */
-private:
-	void _do( const ImgWrap *imgWrapSrc, CFeatureImg *featImg );
+//private:
+	void _do(const ImgWrap *imgWrapSrc, CFeatureImg *featImg);
 
 	void _cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg);				// lbp
 	void _cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int scale);		// mb-lbp
