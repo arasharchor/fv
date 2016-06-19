@@ -12,7 +12,7 @@ public:
 
 	/* interface */
 public:
-	virtual void doit( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )=0;
+	virtual void doit(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )=0;
 
 	/* var member */
 public:
