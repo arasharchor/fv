@@ -10,19 +10,16 @@ class ImgWrap;
 class CFeatureModel
 {
 public:
-	CFeatureModel(){ mixlbp.clear();mixsift.release();}
+	CFeatureModel(){}
 public:
 	std::vector<double> mixfeat;
-	std::vector<int> mixlbp;
-	cv::Mat mixsift;
-	std::vector<cv::Mat> gaborfeat;
 };
 
 //特征组织类
 class CFeatureImg
 {
 public:
-	CFeatureImg(){ lbpfeat.clear();siftfeat.release();}
+	CFeatureImg(){ lbpfeat.clear();siftfeat.release();gaborfeat.clear();}
 public:
 	std::vector<int> lbpfeat;
 	cv::Mat siftfeat;
@@ -40,8 +37,12 @@ public:
 public:
 
 	/* member fun */
-private:
-	void _mixedfeature(const CFeatureImg *featImg1, const CFeatureImg *featImg2, CFeatureModel *featMode);
+	void _mixfeature(CFeatureImg *featImg1, CFeatureImg *featImg2);
+
+	void _mixlbpfeat(CFeatureImg *featImg1, CFeatureImg *featImg2);
+	void _mixsiftfeat(CFeatureImg *featImg1, CFeatureImg *featImg2);
+	void _mixgaborfeat(CFeatureImg *featImg1, CFeatureImg *featImg2);
+
 	/* member var */
 public:
 	CFeatureModel mFeatureMode;
