@@ -38,12 +38,12 @@ CExtfeature::CExtfeature()
 	}
 }
 
-void CExtfeature::doit( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
+void CExtfeature::doit(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
 	_do(imgWrapSrc, featImg);
 }
 
-void CExtfeature::_do( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
+void CExtfeature::_do(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
 	_cextlbp(imgWrapSrc, featImg);
 	//_cextlbp(imgWrapSrc, featStore, 5);
@@ -51,7 +51,7 @@ void CExtfeature::_do( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 	_cextgabor(imgWrapSrc, featImg);
 }
 
-void CExtfeature::_cextlbp( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
+void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
 	Mat *img = (Mat *)imgWrapSrc->context;
 	assert(img->channels() == 1);	//single channel
@@ -85,7 +85,7 @@ void CExtfeature::_cextlbp( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 	} // end of for
 } // end of function
 
-void CExtfeature::_cextlbp( const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int scale )
+void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int scale )
 {
 	Mat *img = (Mat *)imgWrapSrc->context;
 	assert(img->channels() == 1);	//single channel
@@ -155,7 +155,7 @@ void CExtfeature::_cextlbp( const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int
 	} // end of for
 } // end of function
 
-void CExtfeature::_cextsift( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
+void CExtfeature::_cextsift(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
 	Mat *img = (Mat *)imgWrapSrc->context;
 	assert(img->channels() == 1);	//single channel
@@ -173,7 +173,7 @@ void CExtfeature::_cextsift( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 // K_max = pi / 2
 // f = sqrt(2)
 // sigma = 2 * pi
-void CExtfeature::_cextgabor( const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
+void CExtfeature::_cextgabor(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
 	Mat *imgSrc = (Mat *)imgWrapSrc->context;
 	assert(imgSrc->channels() == 1);				//single channel
