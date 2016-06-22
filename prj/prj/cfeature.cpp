@@ -38,6 +38,7 @@ void CFeature::_mixfeature(CFeatureImg *featImg1, CFeatureImg *featImg2)
 	_mixlbpfeat(featImg1, featImg2);
 	_mixsiftfeat(featImg1, featImg2);
 	_mixgaborfeat(featImg1, featImg2);
+	//_mixcatgaborfeat(featImg1, featImg2);
 }
 
 void CFeature::_mixlbpfeat(CFeatureImg *featImg1, CFeatureImg *featImg2)
@@ -97,3 +98,17 @@ void CFeature::_mixgaborfeat(CFeatureImg *featImg1, CFeatureImg *featImg2)
 	}
 }
 
+void CFeature::_mixcatgaborfeat(CFeatureImg *featImg1, CFeatureImg *featImg2)
+{
+	// for cat gabor
+	for (size_t i = 0; i < featImg1->catgabor.size(); ++i)
+	{
+		float sum = 0;
+		for (size_t j = 0; j < featImg1->catgabor[i].size(); ++j)
+		{
+			sum += (featImg1->catgabor[i][j] - featImg2->catgabor[i][j]) * (featImg1->catgabor[i][j] - featImg2->catgabor[i][j]);
+		}
+		sum /= featImg1->catgabor.size();
+		mFeatureMode.mixfeat.push_back(sum);
+	}
+}

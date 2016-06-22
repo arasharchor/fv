@@ -19,11 +19,12 @@ public:
 class CFeatureImg
 {
 public:
-	CFeatureImg(){ lbpfeat.clear();siftfeat.release();gaborfeat.clear();}
+	CFeatureImg(){}
 public:
 	std::vector<int> lbpfeat;
 	cv::Mat siftfeat;
 	std::vector<cv::Mat> gaborfeat;
+	std::vector<std::vector<int> > catgabor;
 };
 class CFeature
 {
@@ -43,6 +44,7 @@ public:
 	void _mixsiftfeat(CFeatureImg *featImg1, CFeatureImg *featImg2);
 	void _mixgaborfeat(CFeatureImg *featImg1, CFeatureImg *featImg2);
 
+	void _mixcatgaborfeat(CFeatureImg *featImg1, CFeatureImg *featImg2);
 	/* member var */
 public:
 	CFeatureModel mFeatureMode;
