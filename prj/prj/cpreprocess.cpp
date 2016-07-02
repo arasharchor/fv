@@ -5,8 +5,14 @@
 #include <opencv.hpp>
 #include <opencv2/core/core.hpp>
 
+//#define _CRT_SECURE_NO_DEPRECATE//关闭警告
+
+#include "facedetect-dll.h"
+#pragma comment(lib,"libfacedetect.lib")
+
 #include "wrap.h"
 #include "cpreprocess.h"
+#include "iofile.h"
 
 using namespace cv;
 using namespace std;
@@ -22,22 +28,54 @@ CPreprocess::CPreprocess()
 	minNeighbors = 4;
 }
 
-void CPreprocess::doit( ImgWrap *imgWrapSrc )
+bool CPreprocess::doit( ImgWrap *imgWrapSrc )
 {
-	_do(imgWrapSrc);
+	return _do(imgWrapSrc);
 }
 
-void CPreprocess::_do( ImgWrap *imgWrapSrc)//void CPreprocess::_do(const Mat &img, CascadeClassifier &cascade, vector<Rect> &objects, int scaledWidth, int flags, Size minFeatureSize, float searchScaleFactor, int minNeighbors)
+bool CPreprocess::_do( ImgWrap *imgWrapSrc)//void CPreprocess::_do(const Mat &img, CascadeClassifier &cascade, vector<Rect> &objects, int scaledWidth, int flags, Size minFeatureSize, float searchScaleFactor, int minNeighbors)
 {
 	//添加函数
 	Mat *img = (Mat *)imgWrapSrc->context;
 
-	_detectObjectsCustom(*img, *classifier, objects, scaledWidth, flags, minFeatureSize, searchScaleFactor, minNeighbors);
+	//return _detectObjectsCustom(*img, *classifier, objects, scaledWidth, flags, minFeatureSize, searchScaleFactor, minNeighbors);
+	return _detectObjectsCustom(*img);
 	//_drawFaceImage(*img, objects);
 	//_detectLargestObject(*img, *classifier, largestObject, scaledWidth);
 	//_drawFaceImage(*img, largestObject);
 }
-void CPreprocess::_detectObjectsCustom(Mat &img, CascadeClassifier &cascade, vector<Rect> &objects, int scaledWidth, int flags, Size minFeatureSize, float searchScaleFactor, int minNeighbors)
+bool CPreprocess::_detectObjectsCustom(Mat &img)
+{
+	Mat gray(img);//共用数据地址
+	/*facedetect_multiview*/ //facedetect_frontal
+	int * pResults = NULL;
+	pResults = facedetect_multiview((unsigned char*)(gray.ptr(0)), gray.cols, gray.rows, gray.step, 1.4f, 2, 24);
+
+	//for(int i = 0; i < (pResults ? *pResults : 0); i++)
+	//{
+		short * p = ((short*)(pResults+1))+6*0;
+		int x = p[0];
+		int y = p[1];
+		int w = p[2];
+		int h = p[3];
+		int neighbors = p[4];
+		int angle = p[5];
+
+		//cvPoint(x, y), cvPoint(x + h, y + w)
+		if (h < 10 || w < 10)
+		{
+			printf("the whole img...");
+		}
+		else
+		{
+			img = img(Rect(x, y, h, w));
+		}
+		
+		return true;
+	//}
+
+}
+bool CPreprocess::_detectObjectsCustom(Mat &img, CascadeClassifier &cascade, vector<Rect> &objects, int scaledWidth, int flags, Size minFeatureSize, float searchScaleFactor, int minNeighbors)
 {
     //将彩色图像转化为灰度
     Mat gray;
@@ -98,7 +136,16 @@ void CPreprocess::_detectObjectsCustom(Mat &img, CascadeClassifier &cascade, vec
         if (objects[i].y + objects[i].height > img.rows)
             objects[i].y = img.rows - objects[i].height;
     }
+	if (objects.empty())	// 空 faile
+	{
+		return false;
+	}
 	img = img(objects[0]);
+	return true;
+	//else
+	//{
+	//	writeFeatFile("err.log", 0, );
+	//}
     // Return with the detected face rectangles stored in "objects".
 }
 

@@ -15,10 +15,12 @@ using namespace cv;
 
 CExtfeature::CExtfeature()
 {
+	high = 16;
+	width = 16;
 	// table of the uniform mode
 	const int tmp[58] = 
 	{	
-		//  1   2	  3	   4	5	 6	  7			number of zero
+	//  1   2	  3	   4	5	 6	  7			number of zero
 		127, 63,  31,  15,  7,   3,   1,
 		191, 159, 143, 135, 131, 129, 128,
 		223, 207, 199, 195, 193, 192, 64,
@@ -27,7 +29,7 @@ CExtfeature::CExtfeature()
 		251, 249, 248, 120, 56,  24,  8,
 		253, 252, 124, 60,  28,  12,  4,
 		254, 126, 62,  30,  14,  6,   2,
-		//  0   8
+	//  0   8
 		255, 0
 	};
 	utable = new int[256];
@@ -49,33 +51,33 @@ void CExtfeature::_do(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 	//_cextlbp(imgWrapSrc, featStore, 5);
 	_cextsift(imgWrapSrc, featImg);
 	_cextgabor(imgWrapSrc, featImg);
+
+	//_ccatgabor(featImg, mean_pooling);
 }
 
 void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
-	Mat *img = (Mat *)imgWrapSrc->context;
-	assert(img->channels() == 1);	//single channel
+	Mat img(*(Mat *)imgWrapSrc->context);
+	assert(img.channels() == 1);	//single channel
 
-	int row = img->rows;
-	int col = img->cols;
 	// p0	p1	p2
 	// p7	x	p3
 	// p6	p5	p4
 	featImg->lbpfeat.resize(256);	// lbp feature (histogram of lbp image)
-	for (int i = 1; i < row - 1; ++i)
+	for (int i = 1; i < img.rows - 1; ++i)
 	{
-		for (int j = 1; j < col - 1; ++j)
+		for (int j = 1; j < img.cols - 1; ++j)
 		{
 			int lbpvalue = 0;
 			
-			if (img->at<uchar>(i - 1, j - 1) > img->at<uchar>(i, j))	{ lbpvalue += 1;  }	// p0
-			if (img->at<uchar>(i - 1, j + 0) > img->at<uchar>(i, j))	{ lbpvalue += 2;  }	// p1
-			if (img->at<uchar>(i - 1, j + 1) > img->at<uchar>(i, j))	{ lbpvalue += 4;  }	// p2
-			if (img->at<uchar>(i + 0, j + 1) > img->at<uchar>(i, j))	{ lbpvalue += 8;  }	// p3
-			if (img->at<uchar>(i + 1, j + 1) > img->at<uchar>(i, j))	{ lbpvalue += 16; }	// p4
-			if (img->at<uchar>(i + 1, j + 0) > img->at<uchar>(i, j))	{ lbpvalue += 32; }	// p5
-			if (img->at<uchar>(i + 1, j - 1) > img->at<uchar>(i, j))	{ lbpvalue += 64; }	// p6
-			if (img->at<uchar>(i + 0, j - 1) > img->at<uchar>(i, j))	{ lbpvalue += 128;}	// p7
+			if (img.at<uchar>(i - 1, j - 1) > img.at<uchar>(i, j))	{ lbpvalue += 1;  }	// p0
+			if (img.at<uchar>(i - 1, j + 0) > img.at<uchar>(i, j))	{ lbpvalue += 2;  }	// p1
+			if (img.at<uchar>(i - 1, j + 1) > img.at<uchar>(i, j))	{ lbpvalue += 4;  }	// p2
+			if (img.at<uchar>(i + 0, j + 1) > img.at<uchar>(i, j))	{ lbpvalue += 8;  }	// p3
+			if (img.at<uchar>(i + 1, j + 1) > img.at<uchar>(i, j))	{ lbpvalue += 16; }	// p4
+			if (img.at<uchar>(i + 1, j + 0) > img.at<uchar>(i, j))	{ lbpvalue += 32; }	// p5
+			if (img.at<uchar>(i + 1, j - 1) > img.at<uchar>(i, j))	{ lbpvalue += 64; }	// p6
+			if (img.at<uchar>(i + 0, j - 1) > img.at<uchar>(i, j))	{ lbpvalue += 128;}	// p7
 
 			if (this->utable[lbpvalue] == 1)
 			{
@@ -87,19 +89,19 @@ void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 
 void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int scale )
 {
-	Mat *img = (Mat *)imgWrapSrc->context;
-	assert(img->channels() == 1);	//single channel
+	Mat img(*(Mat *)imgWrapSrc->context);
+	assert(img.channels() == 1);	// single channel
 
 	Mat imgIntegral;
-	integral(*img, imgIntegral);
+	integral(img, imgIntegral);
 	
 	featImg->lbpfeat.resize(256);	// mb-lbp feature (histogram of mb-lbp image)
 	// mb0		mb1		mb2
 	// mb7	  center	mb3
 	// mb6		mb5		mb4
-	for (int i = 0; i < img->rows - 3 * scale; ++i)		//row
+	for (int i = 0; i < img.rows - 3 * scale; ++i)		// row
 	{
-		for (int j = 0; j < img->cols - 3 * scale; ++j)	//col
+		for (int j = 0; j < img.cols - 3 * scale; ++j)	// col
 		{
 			// nA	nB	nC	nD
 			// nE	nF	nG	nH
@@ -146,7 +148,7 @@ void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int 
 			if (mblock[6] >= centblock) { lbpvalue += 64; }
 			if (mblock[7] >= centblock) { lbpvalue += 128;}
 
-			if (this->utable)
+			if (this->utable[lbpvalue] == 1)
 			{
 				featImg->lbpfeat[lbpvalue] += 1;	// cumulative
 			}
@@ -157,13 +159,13 @@ void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int 
 
 void CExtfeature::_cextsift(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
-	Mat *img = (Mat *)imgWrapSrc->context;
-	assert(img->channels() == 1);	//single channel
+	Mat img(*(Mat *)imgWrapSrc->context);
+	assert(img.channels() == 1);	// single channel
 	vector<KeyPoint> keypoint;
 	Mat des, mask;
 
 	SIFT sift;
-	sift(*img, mask, keypoint, featImg->siftfeat);
+	sift(img, mask, keypoint, featImg->siftfeat);
 }
 
 // ¦Õ_uv(z) = (|K_uv| ^ 2 / (sigma ^ 2)) * exp(-(|K_uv|^2 * |z|^2) / (2 * sigma^2)) * (exp(i * K_uv) - exp(-sigma^2 / 2))
@@ -175,8 +177,8 @@ void CExtfeature::_cextsift(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 // sigma = 2 * pi
 void CExtfeature::_cextgabor(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 {
-	Mat *imgSrc = (Mat *)imgWrapSrc->context;
-	assert(imgSrc->channels() == 1);				//single channel
+	Mat img (*(Mat *)imgWrapSrc->context);
+	assert(img.channels() == 1);				//single channel
 
 	double sigma = 2 * CV_PI;
 	double f = sqrt(2.0);
@@ -218,15 +220,15 @@ void CExtfeature::_cextgabor(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 #define GABOR_MODE 0
 
 #if GABOR_MODE == 1
-			filter2D(*imgSrc, imgReal, CV_32F, imgMaskReal, Point((mask_width - 1) / 2, (mask_width - 1) / 2));		// real filter
+			filter2D(img, imgReal, CV_32F, imgMaskReal, Point((mask_width - 1) / 2, (mask_width - 1) / 2));		// real filter
 			Mat imgDst(imgReal);
 #elif GABOR_MODE == 2
-			filter2D(*imgSrc, imgIm, CV_32F, imgMaskIm, Point((mask_width - 1) / 2, (mask_width - 1) / 2));			// imaginary filter
+			filter2D(img, imgIm, CV_32F, imgMaskIm, Point((mask_width - 1) / 2, (mask_width - 1) / 2));			// imaginary filter
 			Mat imgDst(imgIm);
 #else
 			// magnitude filter
-			filter2D(*imgSrc, imgReal, CV_32F, imgMaskReal, Point((mask_width - 1) / 2, (mask_width - 1) / 2));
-			filter2D(*imgSrc, imgIm, CV_32F, imgMaskIm, Point((mask_width - 1) / 2, (mask_width - 1) / 2));
+			filter2D(img, imgReal, CV_32F, imgMaskReal, Point((mask_width - 1) / 2, (mask_width - 1) / 2));
+			filter2D(img, imgIm, CV_32F, imgMaskIm, Point((mask_width - 1) / 2, (mask_width - 1) / 2));
 
 			cv::pow(imgReal, 2, imgReal);
 			cv::pow(imgIm, 2, imgIm);
@@ -243,5 +245,65 @@ void CExtfeature::_cextgabor(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 			//imshow("gabor response", imgGabor); waitKey(0);	// show the image
 
 		} // end of for
+	} // end of for
+} // end of function
+
+//void _ccatgabor(const ImgWrap *imgWrapSrc, vector<int> &poolgabor, int pooling)
+void CExtfeature::_ccatgabor(CFeatureImg *featImg, int pooling)
+{
+	featImg->catgabor.resize(featImg->gaborfeat.size());
+	for (size_t k = 0; k < featImg->gaborfeat.size(); ++k)
+	{
+		Mat img(featImg->gaborfeat[k]);
+		if (pooling == mean_pooling)
+		{
+			// mean pooling
+			Mat imgIntegral;
+			integral(img, imgIntegral);
+
+			int blockNums = high * width;
+
+			for (int i = 0; i < img.rows - high; i += high)				// for rows
+			{
+				for (int j = 0; j < img.cols - width; j += width)			// for cols
+				{
+					// nA	nB
+					// nC	nD
+					int nA = imgIntegral.at<int>(i, j);
+					int nB = imgIntegral.at<int>(i, j + width - 1);
+					int nC = imgIntegral.at<int>(i + high - 1, j);
+					int nD = imgIntegral.at<int>(i + high - 1, j + width - 1);
+
+					featImg->catgabor[k].push_back((nD + nA - nB - nC) / blockNums);
+
+				} // end of for
+			} // end of for
+		} // end of if
+		else
+		{
+			// max pooling
+			for (int i = 0; i < img.rows - high; i += high)				// for rows 
+			{
+				for (int j = 0; j < img.cols - width; j += width)			// for cols
+				{
+					Mat block = img(Rect(i, j, width - 1, high - 1));
+					int maxvalue = 0;
+
+					for (int row = 0; row < block.rows; row++)		// for sub-rows
+					{
+						for (int col = 0; col < block.cols; col++)	// for sub-cols
+						{
+							if (block.at<int>(row, col) > maxvalue)
+							{
+								maxvalue = block.at<int>(row, col);
+							}
+						}
+					}
+
+					featImg->catgabor[k].push_back(maxvalue);
+
+				} // end of for
+			} // end of for
+		} // end of else
 	} // end of for
 } // end of function
