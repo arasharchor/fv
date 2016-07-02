@@ -5,7 +5,8 @@
 /prj/*.suo
 /prj/*.sln
 
-
+/prj/prj/pictures
+/prj/prj/ORL
 /prj/prj/Debug
 /prj/prj/*.vcxproj
 /prj/prj/*.filters
