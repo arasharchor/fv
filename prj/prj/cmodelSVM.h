@@ -5,16 +5,13 @@
 
 class CvSVM;
 
-class CModelSVMStore
-{
-public:
-	CModelSVMStore();
-	~CModelSVMStore();
-	CvSVM *SVM;
-};
-
 class CModelSVM : public CModelInt
 {
+	/* ctor and de-ctor */
+public:
+	CModelSVM();
+	~CModelSVM();
+
 	/* interface */
 public:
 	void train( const std::vector<CFeature> &feaSet , const std::vector<float> &labSet ) override;
@@ -30,7 +27,7 @@ private:
 
 	/* member var */
 private:
-	CModelSVMStore mModelStore;
+	CvSVM *SVM;
 };
 
 #endif
