@@ -12,7 +12,7 @@
 
 #include "iofile.h"
 
-static int TRAIN_NUM = 4;			//训练图像对个数
+const int TRAIN_NUM = 2000;			//训练图像对个数
 
 using namespace std;
 using namespace cv;
