@@ -5,6 +5,7 @@
 #include <string>
 #include <opencv.hpp>
 
+
 #include "common.h"
 #include "cmodelSVM.h"
 #include "cfeature.h"
@@ -12,7 +13,7 @@
 
 #include "iofile.h"
 
-static int TRAIN_NUM = 1000;			//训练图像对个数
+static int TRAIN_NUM = 2000;			//训练图像对个数
 
 using namespace std;
 using namespace cv;
@@ -23,7 +24,8 @@ int main(void)
 
 	vector<CFeature> featureSet(TRAIN_NUM);	//特征集
 	vector<float> labelSet(TRAIN_NUM);
-
+	//cvPreparePredictData();
+	int errCount = 0;
 	// 1).提取所有图像的特征
 	for(int i = 0; i < TRAIN_NUM; i++)
 	{
@@ -44,12 +46,19 @@ int main(void)
 		Mat img2 = imread(get<1>(path), IMREAD_GRAYSCALE);
 
 //		printf("start %d\n", i);
-		imshow("img1", img1);imshow("img2", img2);
+//		imshow("img1", img1);imshow("img2", img2);
 		featureSet[i] =  CFeature(&ImgWrap(&img1), &ImgWrap(&img2));
-		imshow("after img1", img1);imshow("after img2", img2);
-		printf("finish %d\n", i);
-
-		waitKey(0);
+//		imshow("after img1", img1);imshow("after img2", img2);
+		if (featureSet[i].mFeatureMode.mixfeat.empty())
+		{
+			printf("error----------------%d\n", errCount++);
+		}
+		else
+		{
+			printf("finish %d\n", i);
+		}
+		
+//		waitKey(0);
 	}
 
 	//2).训练模型

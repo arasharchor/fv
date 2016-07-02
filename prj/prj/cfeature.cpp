@@ -20,16 +20,23 @@ CFeature::CFeature(ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2)
 	//预处理
 	if(preprocess)
 	{
-		preprocess->doit(imgWrapSrc1);
-		preprocess->doit(imgWrapSrc2);
+		if (!preprocess->doit(imgWrapSrc1))
+		{
+			return;
+		}
+		if (!preprocess->doit(imgWrapSrc2))
+		{
+			return;
+		}
 	}
 
 	//提取特征
 	if(extfeat)
 	{
-		extfeat->doit(imgWrapSrc1, &this->mFeatureImgA);
-		extfeat->doit(imgWrapSrc2, &this->mFeatureImgB);
-		_mixfeature(&this->mFeatureImgA, &this->mFeatureImgB);
+		CFeatureImg mFeatureImgA, mFeatureImgB;
+		extfeat->doit(imgWrapSrc1, &mFeatureImgA);
+		extfeat->doit(imgWrapSrc2, &mFeatureImgB);
+		_mixfeature(&mFeatureImgA, &mFeatureImgB);
 	}
 }
 
@@ -62,7 +69,11 @@ void CFeature::_mixsiftfeat(CFeatureImg *featImg1, CFeatureImg *featImg2)
 	BruteForceMatcher<L2<float> > matcher;					// brute force matcher
 	vector<DMatch> matches1to2;								// result of matches 1-->2
 	vector<DMatch> matches2to1;								// result of matches 2-->1
-
+	if (featImg1->siftfeat.empty() || featImg2->siftfeat.empty())
+	{
+		printf("----------楼下没有SIFT特征------------\n");
+		return;
+	}
 	matcher.match(featImg1->siftfeat, featImg2->siftfeat, matches1to2);
 	matcher.match(featImg2->siftfeat, featImg1->siftfeat, matches2to1);
 

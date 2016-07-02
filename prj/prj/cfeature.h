@@ -48,8 +48,8 @@ public:
 	/* member var */
 public:
 	CFeatureModel mFeatureMode;
-	CFeatureImg mFeatureImgA;
-	CFeatureImg mFeatureImgB;
+	//CFeatureImg mFeatureImgA;
+	//CFeatureImg mFeatureImgB;
 };
 
 #endif 

@@ -11,7 +11,7 @@ public:
 
 	/* interface */
 public:
-	virtual void doit( ImgWrap *imgWrapSrc )=0;
+	virtual bool doit( ImgWrap *imgWrapSrc )=0;
 };
 
 #endif
