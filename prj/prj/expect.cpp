@@ -25,7 +25,7 @@ void expect(void)
 	vector<CFeature>			featureSet(predNum);	//特征集
 	vector<float>				labelSet(predNum);		//标签集
 	vector<float>				similSet(predNum);		//相似度集
-	vector<pair<float,float>>	rocSet(100);		
+	vector<pair<float,float>>	rocSet(100);			//fpr tpr集
 
 	//1).提取测试样本特征，并得到对应标签
 	for(int i=0; i<predNum/2; i++)

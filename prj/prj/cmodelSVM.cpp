@@ -49,11 +49,6 @@ void CModelSVM::train(const std::vector<CFeature> &feaSet, const std::vector<flo
 	SVM->train(trains, labels, Mat(), Mat(), params);
 }
 
-void CModelSVM::validation_model( const std::vector<CFeature> &feaSet , const std::vector<float> &labSet )
-{
-	assert( feaSet.size()==labSet.size() && feaSet.size() );
-}
-
 double CModelSVM::similarity(const CFeature &feat)
 {
 	Mat sampleMat(1, feat.mFeatureMode.mixfeat.size(), CV_32FC1);
@@ -62,14 +57,6 @@ double CModelSVM::similarity(const CFeature &feat)
 
 	float response = svm_predict(SVM, sampleMat, true);
 	return sigmoid(response);
-}
-
-void CModelSVM::_loadLabel( cv::Mat &labelData, const std::vector<float> &labSet )
-{
-	for(int i=0; i<labSet.size(); i++)
-	{
-		labelData.at<float>(i) = labSet.at(i);
-	}
 }
 
 //=======================Model IO==========================
@@ -92,5 +79,13 @@ void CModelSVM::_loadTrain( cv::Mat &trainData, const std::vector<CFeature> &fea
 		{
 			trainData.at<float>(i, j) = feaSet[i].mFeatureMode.mixfeat[j];
 		}
+	}
+}
+
+void CModelSVM::_loadLabel( cv::Mat &labelData, const std::vector<float> &labSet )
+{
+	for(int i=0; i<labSet.size(); i++)
+	{
+		labelData.at<float>(i) = labSet.at(i);
 	}
 }

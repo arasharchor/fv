@@ -15,7 +15,6 @@ public:
 	/* interface */
 public:
 	void train( const std::vector<CFeature> &feaSet , const std::vector<float> &labSet ) override;
-	void validation_model( const std::vector<CFeature> &feaSet , const std::vector<float> &labSet ) override;
 
 	double similarity( const CFeature &fea ) override;
 	void saveModel(std::string model_file) override;
