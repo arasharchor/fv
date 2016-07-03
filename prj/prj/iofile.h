@@ -38,8 +38,8 @@ public:
 	void extCoupleImageInf(coupleImageInf &inf, int nth);
 
 	// 读、写第n个样本特征	[true->存在	false->不存在]
-	bool readFeature(std::vector<double> &feat, int label, int nth);
-	void writeFeature(std::vector<double> &feat, int lable, int nth);
+	bool readFeature(std::vector<double> &feat, int nth);
+	void writeFeature(std::vector<double> &feat, int nth);
 
 	// 输出错误到日志
 	void writeErrorLog(const errLogInf &errLog);

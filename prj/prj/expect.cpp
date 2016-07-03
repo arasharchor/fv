@@ -27,12 +27,18 @@ void expect(void)
 	vector<pair<float,float> >	     rocSet(100);            //fpr tpr集
 
 	//1).提取测试样本特征，并得到对应标签
-    for(int i = 0; i < predNum; i++)
+    for(int i = 0; i < predNum / 2; i++)
     {
-        featureSet[i] = CFeature(imgCoupleDataSet, i);
+        featureSet[i] = CFeature(imgCoupleDataSet, i, true);
+        labelSet[i] = 1;
         printf("finish %d\n", i);
     }
-
+    for(int i = 0; i < predNum / 2; i++)
+    {
+        featureSet[i + predNum / 2] = CFeature(imgCoupleDataSet, i, false);
+        labelSet[i + predNum / 2] = 0;
+        printf("finish %d\n", i + predNum / 2);
+    }
 	//2).加载识别模型
 	CModelInt *model = new CModelSVM();
 	model->loadModel("svm_model");

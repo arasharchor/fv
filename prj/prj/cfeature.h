@@ -35,7 +35,7 @@ class CFeature
 public:
 	CFeature(){}
 	CFeature(cv::Mat *imgWrapSrc1, cv::Mat *imgWrapSrc2);
-	CFeature(iofile imgCoupleDataSet, int nth);
+	CFeature(iofile imgCoupleDataSet, int nth, bool type);
 	~CFeature(){}
 
 	/* interface */
