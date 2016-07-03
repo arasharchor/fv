@@ -21,6 +21,7 @@ void train(void)
     iofile imgCoupleDataSet("datalist.txt");
 
     vector<CFeature> featureSet(TRAIN_NUM);	//特征集
+	vector<float> labelSet(TRAIN_NUM);
 
     // 1).提取所有图像的特征
     for(int i = 0; i < TRAIN_NUM; i++)
@@ -30,7 +31,6 @@ void train(void)
     }
 
     //2).训练模型
-    vector<float> labelSet(TRAIN_NUM);
     CModelInt *model = new CModelSVM();
     model->train(featureSet, labelSet);
     model->saveModel("svm_model");

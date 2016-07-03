@@ -16,8 +16,6 @@ typedef struct CvSparseVecElem32f
 }
 CvSparseVecElem32f;
 
-
-
 static int icvCmpSparseVecElems( const void* a, const void* b )
 {
     return ((CvSparseVecElem32f*)a)->idx - ((CvSparseVecElem32f*)b)->idx;

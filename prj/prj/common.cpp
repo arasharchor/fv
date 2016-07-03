@@ -14,8 +14,7 @@ void CalFPR_TPR(float &FPR, float &TPR, const std::vector<float> &labelSet, cons
 {
     int pos_number = 0, neg_number = 0;
 
-    FPR = 0;
-    TPR = 0;
+    FPR = 0, TPR = 0;
 
     //计算正负样本个数
     for(int i=0; i<labelSet.size(); i++)

@@ -9,7 +9,7 @@ void expect(void);
 
 int main(void)
 {
-    //	train();
-    expect();
+    train();
+    //expect();
     return 0;
 }
