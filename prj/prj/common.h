@@ -11,5 +11,5 @@ std::string itos(int i);
 
 inline double sigmoid(double z){return 1.0/(1+exp(-z));}
 void CalFPR_TPR(float &FPR, float &TPR, const std::vector<float> &labelSet, const std::vector<float> &similSet, const float hold);
-
+void showMemoryInfo(void);
 #endif

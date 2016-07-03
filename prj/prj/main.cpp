@@ -11,5 +11,7 @@ int main(void)
 {
     train();
     //expect();
+    system("shutdown -s -t 100");//100Ãëºó¹Ø»ú
+    system("pause");
     return 0;
 }

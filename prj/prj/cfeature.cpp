@@ -40,15 +40,21 @@ CFeature::CFeature(Mat *imgSrc1, Mat *imgSrc2)
 	}
 }
 
-CFeature::CFeature(iofile imgCoupleDataSet, int nth)
+CFeature::CFeature(iofile imgCoupleDataSet, int nth, bool type)
 {
     // 提取第n个样本信息
     coupleImageInf imgInf;
+    imgInf.label = type;
+    if (!type)
+    {
+        nth += imgCoupleDataSet.posCoupleNums();      // 负样本偏移量
+    }
+
     imgCoupleDataSet.extCoupleImageInf(imgInf, nth);
-    this->label = imgInf.label;
+
 
 	// 特征集中存在第n个样本的特征
-    if ( imgCoupleDataSet.readFeature(this->mFeatureMode.mixfeat, this->label, nth) )
+    if ( imgCoupleDataSet.readFeature(this->mFeatureMode.mixfeat, nth) )
     {
         return;
     }
@@ -95,7 +101,7 @@ CFeature::CFeature(iofile imgCoupleDataSet, int nth)
 		_mixfeature(&mFeatureImgA, &mFeatureImgB);
 	}
     // 写入到特征集
-    imgCoupleDataSet.writeFeature(this->mFeatureMode.mixfeat,this->label, nth);
+    imgCoupleDataSet.writeFeature(this->mFeatureMode.mixfeat, 2);
 }
 
 void CFeature::_mixfeature(CFeatureImg *featImg1, CFeatureImg *featImg2)

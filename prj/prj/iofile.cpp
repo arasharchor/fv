@@ -71,10 +71,9 @@ void iofile::extCoupleImageInf(coupleImageInf &inf, int nth)
 
 	inf.imgPath1 = str.substr(0, subStringPos[0]);
 	inf.imgPath2 = str.substr(subStringPos[0] + 1, subStringPos[0]);
-	inf.label = str.back() - '0';
 }
 
-bool iofile::readFeature(vector<double> &feat, int label, int nth)
+bool iofile::readFeature(vector<double> &feat, int nth)
 {
 	fstream fp("Dataset.feat");
 
@@ -98,13 +97,11 @@ bool iofile::readFeature(vector<double> &feat, int label, int nth)
 	{
 		feat.push_back(data);
 	}
-    label = (int)feat.back();
-    feat.pop_back();
 	fp.close();
 	return true;
 }
 
-void iofile::writeFeature(vector<double> &feat, int label, int nth)
+void iofile::writeFeature(vector<double> &feat, int nth)
 {
     ifstream fp("Dataset.feat");
     string lineStr;
@@ -113,11 +110,11 @@ void iofile::writeFeature(vector<double> &feat, int label, int nth)
 
     ofstream tp("Dataset.feat", ios::app | ios::beg);
     tp.seekp(nth* (lineStr.length() + 2));
-    for (size_t i = 0; i < feat.size(); ++i)
+    for (size_t i = 0; i < feat.size() - 1; ++i)
     {
         tp << setprecision(6) << scientific << feat[i] << " ";
     }
-    tp << label << endl;
+    tp << setprecision(6) << scientific << feat[feat.size() - 1] << endl;
     tp.close();
 }
 
