@@ -6,13 +6,13 @@
 #include "cfeature.h"
 #include "cextfeature.h"
 #include "cpreprocess.h"
-
+#include "iofile.h"
 
 using namespace std;
 using namespace cv;
 
 
-CFeature::CFeature(ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2)
+CFeature::CFeature(Mat *imgSrc1, Mat *imgSrc2)
 {
 	CPreprocessInt *preprocess = new CPreprocess();
 	CExtfeatInt *extfeat = new CExtfeature();
@@ -20,11 +20,11 @@ CFeature::CFeature(ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2)
 	//预处理
 	if(preprocess)
 	{
-		if (!preprocess->doit(imgWrapSrc1))
+		if (!preprocess->doit(imgSrc1))
 		{
 			return;
 		}
-		if (!preprocess->doit(imgWrapSrc2))
+		if (!preprocess->doit(imgSrc2))
 		{
 			return;
 		}
@@ -34,10 +34,68 @@ CFeature::CFeature(ImgWrap *imgWrapSrc1, ImgWrap *imgWrapSrc2)
 	if(extfeat)
 	{
 		CFeatureImg mFeatureImgA, mFeatureImgB;
-		extfeat->doit(imgWrapSrc1, &mFeatureImgA);
-		extfeat->doit(imgWrapSrc2, &mFeatureImgB);
+		extfeat->doit(imgSrc1, &mFeatureImgA);
+		extfeat->doit(imgSrc2, &mFeatureImgB);
 		_mixfeature(&mFeatureImgA, &mFeatureImgB);
 	}
+}
+
+CFeature::CFeature(iofile imgCoupleDataSet, int nth)
+{
+    // 提取第n个样本信息
+    coupleImageInf imgInf;
+    imgCoupleDataSet.extCoupleImageInf(imgInf, nth);
+    this->label = imgInf.label;
+
+	// 特征集中存在第n个样本的特征
+    if ( imgCoupleDataSet.readFeature(this->mFeatureMode.mixfeat, this->label, nth) )
+    {
+        return;
+    }
+
+    // 人脸检测
+	Mat imgSrc1 = imread(imgInf.imgPath1, IMREAD_GRAYSCALE);
+	Mat imgSrc2 = imread(imgInf.imgPath2, IMREAD_GRAYSCALE);
+
+	CPreprocessInt *preprocess = new CPreprocess();
+	if (preprocess)
+	{
+		errLogInf logInf = {nth, logInf.imgNoErr, imgInf};
+
+		if ( !preprocess->doit(&imgSrc1) )          // 第一个图片没检测到人脸
+		{
+			logInf.errImg = logInf.img1Err;
+		}
+
+		if ( !preprocess->doit(&imgSrc2) )          // 第二个图片没检测到人脸
+		{
+            if (logInf.errImg == logInf.img1Err)    // 都没检测到
+            {
+                logInf.errImg = logInf.imgAllErr;
+            }
+            else
+            {
+			    logInf.errImg = logInf.img2Err;
+            }
+		}
+		// 输出到日志
+		if (logInf.errImg != logInf.imgNoErr)
+		{
+			imgCoupleDataSet.writeErrorLog(logInf);
+		}
+	}
+	
+	// 提取特征
+	CExtfeatInt *extfeat = new CExtfeature();
+	if(extfeat)
+	{
+		CFeatureImg mFeatureImgA, mFeatureImgB;
+		extfeat->doit(&imgSrc1, &mFeatureImgA);
+		extfeat->doit(&imgSrc2, &mFeatureImgB);
+		_mixfeature(&mFeatureImgA, &mFeatureImgB);
+	}
+    // 写入到特征集
+    imgCoupleDataSet.writeFeature(this->mFeatureMode.mixfeat,this->label, nth);
 }
 
 void CFeature::_mixfeature(CFeatureImg *featImg1, CFeatureImg *featImg2)
@@ -102,8 +160,8 @@ void CFeature::_mixgaborfeat(CFeatureImg *featImg1, CFeatureImg *featImg2)
 		Mat *f1(&featImg1->gaborfeat[i]);
 		Mat *f2(&featImg2->gaborfeat[i]);
 
-		extfeat->_cextlbp((ImgWrap *)(&f1), &mFeatImgA);
-		extfeat->_cextlbp((ImgWrap *)(&f2), &mFeatImgB);
+		extfeat->_cextlbp(f1, &mFeatImgA);
+		extfeat->_cextlbp(f2, &mFeatImgB);
 
 		_mixlbpfeat(&mFeatImgA, &mFeatImgB);
 	}

@@ -10,7 +10,6 @@
 #include "facedetect-dll.h"
 #pragma comment(lib,"libfacedetect.lib")
 
-#include "wrap.h"
 #include "cpreprocess.h"
 #include "iofile.h"
 
@@ -28,15 +27,15 @@ CPreprocess::CPreprocess()
 	minNeighbors = 4;
 }
 
-bool CPreprocess::doit( ImgWrap *imgWrapSrc )
+bool CPreprocess::doit( Mat *imgSrc )
 {
-	return _do(imgWrapSrc);
+	return _do(imgSrc);
 }
 
-bool CPreprocess::_do( ImgWrap *imgWrapSrc)//void CPreprocess::_do(const Mat &img, CascadeClassifier &cascade, vector<Rect> &objects, int scaledWidth, int flags, Size minFeatureSize, float searchScaleFactor, int minNeighbors)
+bool CPreprocess::_do( Mat *imgSrc)//void CPreprocess::_do(const Mat &img, CascadeClassifier &cascade, vector<Rect> &objects, int scaledWidth, int flags, Size minFeatureSize, float searchScaleFactor, int minNeighbors)
 {
 	//Ìí¼Óº¯Êý
-	Mat *img = (Mat *)imgWrapSrc->context;
+	Mat *img(imgSrc);
 
 	//return _detectObjectsCustom(*img, *classifier, objects, scaledWidth, flags, minFeatureSize, searchScaleFactor, minNeighbors);
 	return _detectObjectsCustom(*img);
@@ -64,7 +63,8 @@ bool CPreprocess::_detectObjectsCustom(Mat &img)
 		//cvPoint(x, y), cvPoint(x + h, y + w)
 		if (h < 10 || w < 10)
 		{
-			printf("the whole img...");
+			printf("------------------");
+            return false;
 		}
 		else
 		{

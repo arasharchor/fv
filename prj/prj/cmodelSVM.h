@@ -5,16 +5,20 @@
 
 class CvSVM;
 
+class CModelSVMStore
+{
+public:
+	CModelSVMStore();
+	~CModelSVMStore();
+	CvSVM *SVM;
+};
+
 class CModelSVM : public CModelInt
 {
-	/* ctor and de-ctor */
-public:
-	CModelSVM();
-	~CModelSVM();
-
 	/* interface */
 public:
 	void train( const std::vector<CFeature> &feaSet , const std::vector<float> &labSet ) override;
+	void validation_model( const std::vector<CFeature> &feaSet , const std::vector<float> &labSet ) override;
 
 	double similarity( const CFeature &fea ) override;
 	void saveModel(std::string model_file) override;
@@ -26,7 +30,7 @@ private:
 
 	/* member var */
 private:
-	CvSVM *SVM;
+	CModelSVMStore mModelStore;
 };
 
 #endif

@@ -11,7 +11,7 @@ public:
 
 	/* interface */
 public:
-	virtual bool doit( ImgWrap *imgWrapSrc )=0;
+	virtual bool doit( cv::Mat *imgSrc )=0;
 };
 
 #endif

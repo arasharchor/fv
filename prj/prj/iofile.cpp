@@ -3,16 +3,16 @@
 using namespace std;
 
 
-iofile::iofile(string datalist)
+iofile::iofile(string dataListFile)
 {
-	pathList = datalist;
+	dataList = dataListFile;
 	posCoupleSize = 0;
 	negCoupleSize = 0;
 
 	string str;
-	ifstream dataList(pathList);
+	ifstream listFile(dataList);
 
-	getline(dataList, str);
+	getline(listFile, str);
 	lineLength = str.length();
 
 	for (size_t i = 0; i < str.length(); ++i)
@@ -23,7 +23,7 @@ iofile::iofile(string datalist)
 		}
 	}
 
-	if (str[subStringPos[1] + 1] == '1')	// label
+	if (str[subStringPos[1] + 1] == '1')			// label
 	{
 		posCoupleSize++;
 	}
@@ -32,9 +32,9 @@ iofile::iofile(string datalist)
 		negCoupleSize++;
 	}
 
-	while(!dataList.eof())
+	while(!listFile.eof())
 	{
-		getline(dataList, str);
+		getline(listFile, str);
 		if (str.length() == lineLength)
 		{
 			if (str[subStringPos[1] + 1] == '1')	// label
@@ -48,41 +48,7 @@ iofile::iofile(string datalist)
 		}
 	}
 
-	dataList.close();
-}
-
-void iofile::extCoupleImg_path(tuple<string, string> &path, int nth, bool type)
-{
-	string coupleImg_path;
-
-	ifstream pnFile(pathList);
-
-	if (type)
-	{
-		pnFile.seekg(nth * (lineLength + 2));
-	}
-	else
-	{
-		pnFile.seekg((nth + posCoupleSize) * (lineLength + 2));
-	}
-
-	string str;
-
-	pnFile >> str;
-	path = make_tuple(str.substr(0, subStringPos[0]), str.substr(subStringPos[0] + 1, subStringPos[0]));
-}
-
-void iofile::writeFeatFile(string fileName, int nth, const std::vector<double> &data)
-{
-	// Ãÿ’˜ºØ
-	ofstream dataFile(fileName, ios::app);	// 'w+'
-	dataFile << nth << endl;
-	for (size_t i = 0; i < data.size() - 1; ++i)
-	{
-		dataFile << data[i] << '\t';
-	}
-	dataFile << data.back() << endl;
-	dataFile.close();
+	listFile.close();
 }
 
 int iofile::posCoupleNums()
@@ -93,4 +59,129 @@ int iofile::posCoupleNums()
 int iofile::negCoupleNums()
 {
 	return negCoupleSize;
+}
+
+void iofile::extCoupleImageInf(coupleImageInf &inf, int nth)
+{
+	ifstream fp(dataList);
+	fp.seekg(nth * (lineLength + 2));
+
+	string str;
+	getline(fp, str);
+
+	inf.imgPath1 = str.substr(0, subStringPos[0]);
+	inf.imgPath2 = str.substr(subStringPos[0] + 1, subStringPos[0]);
+	inf.label = str.back() - '0';
+}
+
+bool iofile::readFeature(vector<double> &feat, int label, int nth)
+{
+	fstream fp("Dataset.feat");
+
+	string lineStr;
+	getline(fp, lineStr);
+    if (lineStr.empty())
+    {
+        return false;
+    }
+
+	fp.seekg(nth * (lineStr.length() + 2));
+	getline(fp, lineStr);
+	if (lineStr.empty())
+	{
+		return false;
+	}
+
+	istringstream is(lineStr);
+	double data;
+	while(is >> data)
+	{
+		feat.push_back(data);
+	}
+    label = (int)feat.back();
+    feat.pop_back();
+	fp.close();
+	return true;
+}
+
+void iofile::writeFeature(vector<double> &feat, int label, int nth)
+{
+    ifstream fp("Dataset.feat");
+    string lineStr;
+    getline(fp, lineStr);
+    fp.close();
+
+    ofstream tp("Dataset.feat", ios::app | ios::beg);
+    tp.seekp(nth* (lineStr.length() + 2));
+    for (size_t i = 0; i < feat.size(); ++i)
+    {
+        tp << setprecision(6) << scientific << feat[i] << " ";
+    }
+    tp << label << endl;
+    tp.close();
+}
+
+void iofile::writeErrorLog(const errLogInf &errLog)
+{
+	ofstream fp("errInf.log", ios::app);	// 'w+'
+
+	fp << errLog.errInf.imgPath1
+		<< ':'
+		<< errLog.errInf.imgPath2
+		<< ':'
+		<< errLog.errInf.label
+		<< '@'
+        << errLog.errImg
+		<< '&'
+        << setprecision(4) << scientific << (double)errLog.errOrder
+		<< endl;
+	fp.close();
+}
+
+void iofile::readErrorLog(errLogInf &errLog, int nth)
+{
+    ifstream fp("errInf.log");
+    string lineStr;
+    getline(fp, lineStr);
+
+    fp.seekg(ios::beg);
+    fp.seekg(nth * (lineStr.length() + 2));
+    getline(fp, lineStr);
+
+    errLog.errInf.imgPath1 = lineStr.substr(0, subStringPos[0]);
+    errLog.errInf.imgPath2 = lineStr.substr(subStringPos[0] + 1, subStringPos[0]);
+    errLog.errInf.label = lineStr[subStringPos[1] + 1] - '0';
+    errLog.errImg = lineStr[subStringPos[1] + 3] - '0';
+    
+    lineStr = lineStr.substr(subStringPos[1] + 5, lineStr.length() - subStringPos[1] - 5);
+
+    double nums;
+    istringstream is(lineStr);
+    is >> nums;
+    errLog.errOrder = nums;
+    fp.close();
+}
+
+void iofile::outputSimilarFile(const vector<float> similSet)
+{
+    ofstream fp("Â–“£_Distance.txt");
+    fp << setiosflags(ios::fixed) << setprecision(6) << 0.5 << endl;
+    for (size_t i = 0; i < similSet.size(); i++)
+    {
+        fp << setiosflags(ios::fixed) << setprecision(6) << similSet[i] << endl;
+    }
+    fp.close();
+}
+
+void iofile::outputRocFile(const vector<pair<float,float> > rocSet)
+{
+    ofstream fp("Â–“£_ROC.txt");
+    for (size_t i = 0; i < rocSet.size(); i++)
+    {
+        fp << setiosflags(ios::fixed) << setprecision(4)
+            << 0.01 * i << " " 
+            << rocSet[i].second << " "
+            << rocSet[i].first << endl;
+    }
+    fp.close();
 }

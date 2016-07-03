@@ -10,7 +10,6 @@
 #include "common.h"
 #include "cmodelSVM.h"
 #include "cfeature.h"
-#include "wrap.h"
 
 #include "iofile.h"
 
@@ -19,40 +18,20 @@ using namespace cv;
 
 void expect(void)
 {
-	iofile coupleImgDataSet("datalist.txt");
+	iofile imgCoupleDataSet("datalist.txt");
 	int predNum=20;
 
-	vector<CFeature>			featureSet(predNum);	//特征集
-	vector<float>				labelSet(predNum);		//标签集
-	vector<float>				similSet(predNum);		//相似度集
-	vector<pair<float,float>>	rocSet(100);			//fpr tpr集
+	vector<CFeature>                 featureSet(predNum);    //特征集
+	vector<float>                   labelSet(predNum);	    //标签集
+	vector<float>                   similSet(predNum);	    //相似度集
+	vector<pair<float,float> >	     rocSet(100);            //fpr tpr集
 
 	//1).提取测试样本特征，并得到对应标签
-	for(int i=0; i<predNum/2; i++)
-	{
-		tuple<string, string> path;
-
-		coupleImgDataSet.extCoupleImg_path(path, i, true);						// 第i对正样本
-
-		Mat img1 = imread(get<0>(path), IMREAD_GRAYSCALE);
-		Mat img2 = imread(get<1>(path), IMREAD_GRAYSCALE);
-
-		featureSet[i] =  CFeature(&ImgWrap(&img1), &ImgWrap(&img2));
-		labelSet[i] = 1.0;
-	}
-
-	for(int i=0; i<predNum/2; i++)
-	{
-		tuple<string, string> path;
-
-		coupleImgDataSet.extCoupleImg_path(path, i, false);						// 第i对正样本
-
-		Mat img1 = imread(get<0>(path), IMREAD_GRAYSCALE);
-		Mat img2 = imread(get<1>(path), IMREAD_GRAYSCALE);
-
-		featureSet[i+predNum/2] =  CFeature(&ImgWrap(&img1), &ImgWrap(&img2));
-		labelSet[i+predNum/2] = -1.0;
-	}
+    for(int i = 0; i < predNum; i++)
+    {
+        featureSet[i] = CFeature(imgCoupleDataSet, i);
+        printf("finish %d\n", i);
+    }
 
 	//2).加载识别模型
 	CModelInt *model = new CModelSVM();
@@ -79,4 +58,6 @@ void expect(void)
 	     rocSet[i]指阈值为i*0.01时的FPR与TPR，rocSet[i]是个pair<float, float>数据，first是FPR在ROC中是横轴，second是TPR在ROC中是纵轴
 	     FPR可以理解为“负样本识别错误率”，TPR可以理解为“正样本识别正确率”
 	*/
+    imgCoupleDataSet.outputSimilarFile(similSet);
+    imgCoupleDataSet.outputRocFile(rocSet);
 }

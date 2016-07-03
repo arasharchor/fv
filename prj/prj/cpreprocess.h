@@ -18,11 +18,11 @@ public:
 	/* interface */
 public:
 	CPreprocess();
-	bool doit( ImgWrap *imgWrapSrc ) override;
+	bool doit( cv::Mat *imgSrc ) override;
 
 	/* member fun */
 private:
-	bool _do( ImgWrap *imgWrapSrc);
+	bool _do( cv::Mat *imgSrc);
 
 	bool _detectObjectsCustom(cv::Mat &img);
 	bool _detectObjectsCustom(cv::Mat &img, cv::CascadeClassifier &cascade, std::vector<cv::Rect> &objects, int scaledWidth, int flags, cv::Size minFeatureSize, float searchScaleFactor, int minNeighbors);

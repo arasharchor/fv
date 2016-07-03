@@ -6,9 +6,10 @@ using namespace std;
 
 void train(void);
 void expect(void);
+
 int main(void)
 {
-//	train();
-	expect();
-	return 0;
+    //	train();
+    expect();
+    return 0;
 }

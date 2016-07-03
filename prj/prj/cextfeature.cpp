@@ -2,7 +2,6 @@
 #include <iostream>
 #include "cfeature.h"
 #include "cextfeature.h"
-#include "wrap.h"
 
 #include <opencv2/nonfree/nonfree.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -40,12 +39,12 @@ CExtfeature::CExtfeature()
 	}
 }
 
-void CExtfeature::doit(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
+void CExtfeature::doit(const Mat *imgWrapSrc, CFeatureImg *featImg )
 {
 	_do(imgWrapSrc, featImg);
 }
 
-void CExtfeature::_do(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
+void CExtfeature::_do(const Mat *imgWrapSrc, CFeatureImg *featImg )
 {
 	_cextlbp(imgWrapSrc, featImg);
 	//_cextlbp(imgWrapSrc, featStore, 5);
@@ -55,9 +54,9 @@ void CExtfeature::_do(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 	//_ccatgabor(featImg, mean_pooling);
 }
 
-void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
+void CExtfeature::_cextlbp(const Mat *imgWrapSrc, CFeatureImg *featImg )
 {
-	Mat img(*(Mat *)imgWrapSrc->context);
+	Mat img(*imgWrapSrc);
 	assert(img.channels() == 1);	//single channel
 
 	// p0	p1	p2
@@ -87,9 +86,9 @@ void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 	} // end of for
 } // end of function
 
-void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int scale )
+void CExtfeature::_cextlbp(const Mat *imgWrapSrc, CFeatureImg *featImg, int scale )
 {
-	Mat img(*(Mat *)imgWrapSrc->context);
+	Mat img(*imgWrapSrc);
 	assert(img.channels() == 1);	// single channel
 
 	Mat imgIntegral;
@@ -157,9 +156,9 @@ void CExtfeature::_cextlbp(const ImgWrap *imgWrapSrc, CFeatureImg *featImg, int 
 	} // end of for
 } // end of function
 
-void CExtfeature::_cextsift(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
+void CExtfeature::_cextsift(const Mat *imgWrapSrc, CFeatureImg *featImg )
 {
-	Mat img(*(Mat *)imgWrapSrc->context);
+	Mat img(*imgWrapSrc);
 	assert(img.channels() == 1);	// single channel
 	vector<KeyPoint> keypoint;
 	Mat des, mask;
@@ -175,9 +174,9 @@ void CExtfeature::_cextsift(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
 // K_max = pi / 2
 // f = sqrt(2)
 // sigma = 2 * pi
-void CExtfeature::_cextgabor(const ImgWrap *imgWrapSrc, CFeatureImg *featImg )
+void CExtfeature::_cextgabor(const Mat *imgWrapSrc, CFeatureImg *featImg )
 {
-	Mat img (*(Mat *)imgWrapSrc->context);
+	Mat img (*imgWrapSrc);
 	assert(img.channels() == 1);				//single channel
 
 	double sigma = 2 * CV_PI;
