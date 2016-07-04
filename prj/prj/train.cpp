@@ -42,7 +42,7 @@ void train(void)
     }
     //2).ÑµÁ·Ä£ÐÍ
     
-    //CModelInt *model = new CModelSVM();
-    //model->train(featureSet, labelSet);
-    //model->saveModel("svm_model");
+//    CModelInt *model = new CModelSVM();
+//    model->train(featureSet, labelSet);
+//    model->saveModel("svm_model");
 }

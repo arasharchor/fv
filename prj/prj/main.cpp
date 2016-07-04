@@ -11,7 +11,7 @@ int main(void)
 {
     train();
     //expect();
-    system("shutdown -s -t 100");//100秒后关机
-    system("pause");
+//    system("shutdown -s -t 100");//100秒后关机
+//    system("pause");
     return 0;
 }
