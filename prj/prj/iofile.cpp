@@ -75,7 +75,7 @@ void iofile::extCoupleImageInf(coupleImageInf &inf, int nth)
 
 bool iofile::readFeature(vector<double> &feat, int nth)
 {
-	fstream fp("Dataset.feat");
+	fstream fp("Dataset.featt");
 
 	string lineStr;
 	getline(fp, lineStr);
@@ -103,7 +103,7 @@ bool iofile::readFeature(vector<double> &feat, int nth)
 
 void iofile::writeFeature(vector<double> &feat, int nth)
 {
-    ifstream fp("Dataset.feat");
+    ifstream fp("Dataset.featt");
     string lineStr;
     getline(fp, lineStr);
     fp.close();

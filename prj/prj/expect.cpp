@@ -16,8 +16,8 @@
 using namespace std;
 using namespace cv;
 
-const int predNum=2;
-
+const int predNum = 2000;
+const int jumpNum = 2000;
 void expect(void)
 {
 	iofile imgCoupleDataSet("datalist.txt");
@@ -31,15 +31,15 @@ void expect(void)
 
     for(int i = 0; i < predNum / 2; i++)
     {
-        featureSet[i] = CFeature(imgCoupleDataSet, i, true);
+        featureSet[i] = CFeature(imgCoupleDataSet, jumpNum + i, true);
         labelSet[i] = 1;
-        printf("finish %d\n", i);
+        printf("finish %d\n", i + jumpNum);
     }
     for(int i = 0; i < predNum / 2; i++)
     {
-        featureSet[i + predNum / 2] = CFeature(imgCoupleDataSet, i, false);
+        featureSet[i + predNum / 2] = CFeature(imgCoupleDataSet, jumpNum + i, false);
         labelSet[i + predNum / 2] = -1.0;
-        printf("finish %d\n", i + predNum / 2);
+        printf("finish %d\n", i + jumpNum);
     }
 	//2).加载识别模型
 	CModelInt *model = new CModelSVM();

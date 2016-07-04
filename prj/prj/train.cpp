@@ -12,7 +12,7 @@
 #include "cfeature.h"
 #include "iofile.h"
 
-static int TRAIN_NUM = 2;			//训练图像对个数
+static int TRAIN_NUM = 4000;			//训练图像对个数
 
 using namespace std;
 using namespace cv;
