@@ -16,7 +16,7 @@
 using namespace std;
 using namespace cv;
 
-const int predNum=20;
+const int predNum=2;
 
 void expect(void)
 {
@@ -38,7 +38,7 @@ void expect(void)
     for(int i = 0; i < predNum / 2; i++)
     {
         featureSet[i + predNum / 2] = CFeature(imgCoupleDataSet, i, false);
-        labelSet[i + predNum / 2] = 0;
+        labelSet[i + predNum / 2] = -1.0;
         printf("finish %d\n", i + predNum / 2);
     }
 	//2).加载识别模型
@@ -48,6 +48,7 @@ void expect(void)
 	//3).计算所有特征的相似度
 	for(int i=0; i<predNum; i++)
 	{
+		printf("%d\n", i);
 		similSet[i] = model->similarity(featureSet[i]);
 	}
 
