@@ -47,10 +47,10 @@ CFeature::CFeature(iofile imgCoupleDataSet, int nth, bool type)
     imgInf.label = type;
     if (!type)
     {
-        nth += imgCoupleDataSet.posCoupleNums();      // 负样本偏移量
+        nth += 4200;//imgCoupleDataSet.posCoupleNums();      // 负样本偏移量
     }
 
-    imgCoupleDataSet.extCoupleImageInf(imgInf, nth);
+    //imgCoupleDataSet.extCoupleImageInf(imgInf, nth);
 
 
 	// 特征集中存在第n个样本的特征

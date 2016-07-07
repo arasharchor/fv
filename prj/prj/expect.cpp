@@ -9,6 +9,7 @@
 
 #include "common.h"
 #include "cmodelSVM.h"
+#include "cmodelANN.h"
 #include "cfeature.h"
 
 #include "iofile.h"
@@ -16,8 +17,12 @@
 using namespace std;
 using namespace cv;
 
-const int predNum = 2000;
-const int jumpNum = 2000;
+//const int predNum = 6000;
+//const int jumpNum = 1000;
+
+const int predNum = 1200;
+const int jumpNum = 3600;
+
 void expect(void)
 {
 	iofile imgCoupleDataSet("datalist.txt");
@@ -26,6 +31,7 @@ void expect(void)
 	vector<float>					labelSet(predNum);	    //标签集
 	vector<float>					similSet(predNum);	    //相似度集
 	vector<pair<float,float> >		rocSet(100);            //fpr tpr集
+	vector<float>					rightRate(100);
 
 	//1).提取测试样本特征，并得到对应标签
 
@@ -44,6 +50,8 @@ void expect(void)
 	//2).加载识别模型
 	CModelInt *model = new CModelSVM();
 	model->loadModel("svm_model");
+	//CModelInt *model = new CModelANN();
+	//model->loadModel("ann_model");
 
 	//3).计算所有特征的相似度
 	for(int i=0; i<predNum; i++)
@@ -55,7 +63,7 @@ void expect(void)
 	//4).计算所有hold对应的FPR TPR
 	for(int i=0; i<100; i+=1)
 	{
-		CalFPR_TPR(rocSet[int(i)].first, rocSet[int(i)].second, labelSet, similSet, i*0.01);
+		CalFPR_TPR(rocSet[int(i)].first, rocSet[int(i)].second, rightRate[i], labelSet, similSet, i*0.01);
 	}
 
 	//5).生成输出文件
@@ -69,4 +77,6 @@ void expect(void)
 	*/
     imgCoupleDataSet.outputSimilarFile(similSet);
     imgCoupleDataSet.outputRocFile(rocSet);
+
+	delete model;
 }

@@ -1,5 +1,4 @@
 #include "cmodelSVM.h"
-#include "cfeature.h"
 #include <assert.h>
 #include "common.h"
 
@@ -41,9 +40,10 @@ void CModelSVM::train(const std::vector<CFeature> &feaSet, const std::vector<flo
 	CvSVMParams params;
 
 	params.svm_type = CvSVM::C_SVC;
-	params.C = 0.1;
-	params.kernel_type = CvSVM::LINEAR;
-	params.term_crit = cvTermCriteria(CV_TERMCRIT_ITER, 1e4, 1e-6);
+	params.C = 1;
+//	params.kernel_type = CvSVM::LINEAR;
+	params.kernel_type = CvSVM::RBF;
+	params.term_crit = cvTermCriteria(CV_TERMCRIT_ITER, 1e6, 1e-10);
 
 	//---------------------------------2. train--------------------------------------------------
 	SVM->train(trains, labels, Mat(), Mat(), params);
@@ -64,14 +64,6 @@ double CModelSVM::similarity(const CFeature &feat)
 	return sigmoid(response);
 }
 
-void CModelSVM::_loadLabel( cv::Mat &labelData, const std::vector<float> &labSet )
-{
-	for(int i=0; i<labSet.size(); i++)
-	{
-		labelData.at<float>(i) = labSet.at(i);
-	}
-}
-
 //=======================Model IO==========================
 void CModelSVM::loadModel(std::string model_file)
 {
@@ -81,16 +73,4 @@ void CModelSVM::loadModel(std::string model_file)
 void CModelSVM::saveModel(std::string model_file)
 {
 	this->SVM->save(model_file.c_str());
-}
-
-//=======================load sample========================
-void CModelSVM::_loadTrain( cv::Mat &trainData, const std::vector<CFeature> &feaSet )
-{
-	for(int i=0; i<feaSet.size(); i++)
-	{
-		for(int j=0; j<feaSet[i].mFeatureMode.mixfeat.size(); j++)
-		{
-			trainData.at<float>(i, j) = feaSet[i].mFeatureMode.mixfeat[j];
-		}
-	}
 }

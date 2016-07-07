@@ -19,10 +19,6 @@ public:
 	void saveModel(std::string model_file) override;
 	void loadModel(std::string model_file) override;
 
-private:
-	void _loadTrain( cv::Mat &trainData, const std::vector<CFeature> &feaSet );
-	void _loadLabel( cv::Mat &labelData, const std::vector<float> &labSet );
-
 	/* member var */
 private:
 	CvSVM *SVM;

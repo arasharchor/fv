@@ -13,9 +13,9 @@ string itos(int i)
     return s.str();
 }
 
-void CalFPR_TPR(float &FPR, float &TPR, const std::vector<float> &labelSet, const std::vector<float> &similSet, const float hold)
+void CalFPR_TPR(float &FPR, float &TPR, float &rr, const std::vector<float> &labelSet, const std::vector<float> &similSet, const float hold)
 {
-    int pos_number = 0, neg_number = 0;
+    int pos_number = 0, neg_number = 0, rig_number = 0;
 
     FPR = 0, TPR = 0;
 
@@ -46,10 +46,13 @@ void CalFPR_TPR(float &FPR, float &TPR, const std::vector<float> &labelSet, cons
         {
             TPR += 1;
         }
+
+		rig_number += (yi==labelSet[i] ? 1 : 0);
     }
 
     FPR = FPR / neg_number;
     TPR = TPR / pos_number;
+	rr = float(rig_number) / (pos_number + neg_number);
 }
 
 
