@@ -7,7 +7,13 @@ using namespace cv;
 
 float svm_predict( CvSVM *svm, const Mat& _sample, bool returnDFVal );
 
-CModelSVM::CModelSVM():SVM(NULL)
+	float C;
+	int type;
+	int max_iter;
+	double epsilon;
+
+CModelSVM::CModelSVM(float _C, int _type, int _max_iter, double _epsilon):
+			SVM(NULL),C(_C),type(_type),max_iter(_max_iter),epsilon(_epsilon)
 {
 	SVM = new CvSVM();
 }
@@ -36,22 +42,22 @@ void CModelSVM::train(const std::vector<CFeature> &feaSet, const std::vector<flo
 	_loadTrain(trains, feaSet);
 	_loadLabel(labels, labSet);
 
+	//--------------------------------  train  ------------------------------------------------
+	train(trains, labels);
+}
+
+void CModelSVM::train(const cv::Mat &trains, const cv::Mat &labels)
+{
 	//---------------------------------1. set SVM parameters-------------------------------------
 	CvSVMParams params;
 
 	params.svm_type = CvSVM::C_SVC;
-	params.C = 1;
-//	params.kernel_type = CvSVM::LINEAR;
-	params.kernel_type = CvSVM::RBF;
-	params.term_crit = cvTermCriteria(CV_TERMCRIT_ITER, 1e6, 1e-10);
+	params.C = C;
+	params.kernel_type = type;
+	params.term_crit = cvTermCriteria(CV_TERMCRIT_ITER, max_iter, epsilon);
 
 	//---------------------------------2. train--------------------------------------------------
 	SVM->train(trains, labels, Mat(), Mat(), params);
-}
-
-void CModelSVM::validation_model( const std::vector<CFeature> &feaSet , const std::vector<float> &labSet )
-{
-	assert( feaSet.size()==labSet.size() && feaSet.size() );
 }
 
 double CModelSVM::similarity(const CFeature &feat)
@@ -72,5 +78,11 @@ void CModelSVM::loadModel(std::string model_file)
 
 void CModelSVM::saveModel(std::string model_file)
 {
-	this->SVM->save(model_file.c_str());
+	char backups[1024];
+	
+	sprintf(backups, ".//model//%s_SVM_%f_%d_%d_%d_%f", model_file.c_str(), C, type, max_iter, epsilon);
+	
+	SVM->save(model_file.c_str());
+	SVM->save(backups);
+
 }

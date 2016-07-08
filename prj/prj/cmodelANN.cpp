@@ -9,7 +9,8 @@ int ann_train( CvANN_MLP *ann, const Mat& _inputs, const Mat& _outputs,
                      const Mat& _sample_weights, const Mat& _sample_idx,
                      CvANN_MLP_TrainParams _params, int flags=0 );
 
-CModelANN::CModelANN():ANN(NULL)
+CModelANN::CModelANN(double _scale, int _hiddenSize, int _type, int _max_iter, double _epsilon)
+	: ANN(NULL), scale(_scale), hiddenSize(_hiddenSize), type(_type), max_iter(_max_iter), epsilon(_epsilon)
 {
 	ANN = new CvANN_MLP();
 }
@@ -37,23 +38,26 @@ void CModelANN::train(const std::vector<CFeature> &feaSet, const std::vector<flo
 	_loadTrain(trains, feaSet);
 	_loadLabel(labels, labSet);
 
+	//---------------------------------train-------------------------------------
+	train(trains, labels);
+}
+
+void CModelANN::train( const cv::Mat &trains, const cv::Mat &labels)
+{
+	int trainSize = trains.rows;
+	int featureSize = trains.cols;
+
 	//---------------------------------1. set SVM parameters-------------------------------------
 	CvANN_MLP_TrainParams params;  
     params.train_method=CvANN_MLP_TrainParams::BACKPROP;  
-    params.bp_dw_scale=0.001;  
+    params.bp_dw_scale=scale;  
     params.bp_moment_scale=0.01; 
-	params.term_crit = cvTermCriteria( CV_TERMCRIT_ITER + CV_TERMCRIT_EPS, 1e3, 1e-100 );
-	Mat layerSizes=(Mat_<int>(1,3) << featureSize, 10, 1);  
- //   ANN->create(layerSizes,CvANN_MLP::SIGMOID_SYM);//CvANN_MLP::SIGMOID_SYM  
-	ANN->create(layerSizes,CvANN_MLP::GAUSSIAN);
+	params.term_crit = cvTermCriteria( CV_TERMCRIT_ITER + CV_TERMCRIT_EPS, max_iter, epsilon );
+	Mat layerSizes=(Mat_<int>(1,3) << featureSize, hiddenSize, 1);  
+	ANN->create(layerSizes,type);
 
 	//---------------------------------2. train--------------------------------------------------
-	ann_train(this->ANN, trains, labels, Mat(),Mat(), params);  
-}
-
-void CModelANN::validation_model( const std::vector<CFeature> &feaSet , const std::vector<float> &labSet )
-{
-	assert( feaSet.size()==labSet.size() && feaSet.size() );
+	ann_train(this->ANN, trains, labels, Mat(),Mat(), params);
 }
 
 double CModelANN::similarity(const CFeature &feat)
@@ -66,8 +70,6 @@ double CModelANN::similarity(const CFeature &feat)
 	float response = *responseMat.ptr<float>(0);
 
 	return sigmoid(response);
-//	response = response>1.0 ? 1.0 : (response<-1.0 ? -1.0 : response);	//оч╥Ы
-//	return  response;
 }
 
 //=======================Model IO==========================
@@ -78,5 +80,11 @@ void CModelANN::loadModel(std::string model_file)
 
 void CModelANN::saveModel(std::string model_file)
 {
+	char backups[1024];
+	
+	sprintf(backups, ".//model//%s_ANN_%f_%d_%d_%d_%f", model_file.c_str(), scale, hiddenSize, type, max_iter, epsilon);
+	
 	ANN->save(model_file.c_str());
+	ANN->save(backups);
+
 }

@@ -48,10 +48,10 @@ void expect(void)
         printf("finish %d\n", i + jumpNum);
     }
 	//2).加载识别模型
-	CModelInt *model = new CModelSVM();
-	model->loadModel("svm_model");
-	//CModelInt *model = new CModelANN();
-	//model->loadModel("ann_model");
+	//CModelInt *model = new CModelSVM();
+	//model->loadModel("svm_model");
+	CModelInt *model = new CModelANN();
+	model->loadModel("ann_model");
 
 	//3).计算所有特征的相似度
 	for(int i=0; i<predNum; i++)

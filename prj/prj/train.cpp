@@ -41,12 +41,12 @@ void train(void)
     }
     //2).ÑµÁ·Ä£ÐÍ
     
-	CModelInt *model = new CModelSVM();
-	model->train(featureSet, labelSet);
-	model->saveModel("svm_model");
-
-	//CModelInt *model = new CModelANN();
+	//CModelInt *model = new CModelSVM(1.0, CvSVM::RBF);
 	//model->train(featureSet, labelSet);
-	//model->saveModel("ann_model");
+	//model->saveModel("svm_model");
+
+	CModelInt *model = new CModelANN(0.001, 10, 2);
+	model->train(featureSet, labelSet);
+	model->saveModel("ann_model");
 	delete model;
 }
