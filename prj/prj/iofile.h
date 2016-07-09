@@ -5,9 +5,10 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <io.h>
 #include <sstream>
 #include <iomanip>
+#include <cv.h>
+
 //样本图像
 struct coupleImageInf
 {
@@ -28,38 +29,55 @@ class iofile
 {
 public:
 
-	iofile(std::string dataListFile);
+    iofile::iofile(std::string datalist, 
+        std::string featlist,
+        std::string distfile,
+        std::string rocfile,
+        std::string errfile
+        );
 
-	//返回正、负样本数
-	int posCoupleNums();
-	int negCoupleNums();
+	// 正、负样本数
+	int posSamplesNums(void);
+	int negSamplesNums(void);
 
-	// 提取第n个样本信息
-	void extCoupleImageInf(coupleImageInf &inf, int nth);
+    int rowNums(void);
+    int cloNums(void);
+    // 数据归一化
+    void dataNormalize(cv::Mat &featdata);
+
+	// 提取第n个样本路径信息
+	void load(coupleImageInf &inf, int nth);
 
 	// 读、写第n个样本特征	[true->存在	false->不存在]
-	bool readFeature(std::vector<double> &feat, int nth);
-	void writeFeature(std::vector<double> &feat, int nth);
+	bool load(std::vector<double> &feat, int nth);
+	void save(std::vector<double> &feat, int nth);
+
+    // 载入样本特征
+    void load(cv::Mat &featdata);
+    void load(cv::Mat &featdata, int trainNums, int jumpNums);
 
 	// 输出错误到日志
-	void writeErrorLog(const errLogInf &errLog);
-    void readErrorLog(errLogInf &errLog, int nth);
+	void save(const errLogInf &errLog);
+    void load(errLogInf &errLog, int nth);
 
     // 文件输出
-    void outputSimilarFile(const std::vector<float> similSet);
-    void outputRocFile(const std::vector<std::pair<float,float> > rocSet);
+    void save(const std::vector<float> similSet);
+    void save(const std::vector<std::pair<float,float> > rocSet);
+    void save(const cv::Mat &featureSet);
 
 private:
 
-	int posCoupleSize;					//正样本数
-	int negCoupleSize;					//负样本数
+	int posNums;					    // 正样本数
+	int negNums;					    // 负样本数
 
-	int lineLength;						//列表中一行的长度
+	int lineLength;						// 列表中一行的长度
+	std::vector<int> colonPos;		    // ':'的位置
 
-	std::string dataList;				//列表文件名
-
-	std::vector<int> subStringPos;		//截取位置
-
+	std::string dataList;				// 数据集文件
+    std::string featList;               // 特征文件
+    std::string errorLog;               // 日志文件
+    std::string distFile;               // 距离、相似度
+    std::string rocFile;                // ROC文件
 };
 
 #endif

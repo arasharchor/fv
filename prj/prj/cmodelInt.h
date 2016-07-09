@@ -27,9 +27,9 @@ public:
 protected:
 	void _loadTrain( cv::Mat &trainData, const std::vector<CFeature> &feaSet )
 	{
-		for(int i=0; i<feaSet.size(); i++)
+		for(size_t i=0; i<feaSet.size(); i++)
 		{
-			for(int j=0; j<feaSet[i].mFeatureMode.mixfeat.size(); j++)
+			for(size_t j=0; j<feaSet[i].mFeatureMode.mixfeat.size(); j++)
 			{
 				trainData.at<float>(i, j) = feaSet[i].mFeatureMode.mixfeat[j];
 			}
@@ -37,7 +37,7 @@ protected:
 	}
 	void _loadLabel( cv::Mat &labelData, const std::vector<float> &labSet )
 	{
-		for(int i=0; i<labSet.size(); i++)
+		for(size_t i=0; i<labSet.size(); i++)
 		{
 			labelData.at<float>(i) = labSet.at(i);
 		}

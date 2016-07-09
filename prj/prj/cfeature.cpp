@@ -42,54 +42,54 @@ CFeature::CFeature(Mat *imgSrc1, Mat *imgSrc2)
 
 CFeature::CFeature(iofile imgCoupleDataSet, int nth, bool type)
 {
-    // 提取第n个样本信息
-    coupleImageInf imgInf;
-    imgInf.label = type;
     if (!type)
     {
-        nth += 4200;//imgCoupleDataSet.posCoupleNums();      // 负样本偏移量
+        nth += imgCoupleDataSet.posSamplesNums();      // 负样本偏移量
     }
 
-    //imgCoupleDataSet.extCoupleImageInf(imgInf, nth);
-
-
-	// 特征集中存在第n个样本的特征
-    if ( imgCoupleDataSet.readFeature(this->mFeatureMode.mixfeat, nth) )
+	// 载入第n个样本特征
+    if ( imgCoupleDataSet.load(this->mFeatureMode.mixfeat, nth) )
     {
         return;
     }
+
+    // 提取第n个样本信息
+    coupleImageInf imgInf;
+
+    imgInf.label = type;
+    imgCoupleDataSet.load(imgInf, nth);
 
     // 人脸检测
 	Mat imgSrc1 = imread(imgInf.imgPath1, IMREAD_GRAYSCALE);
 	Mat imgSrc2 = imread(imgInf.imgPath2, IMREAD_GRAYSCALE);
 
-	CPreprocessInt *preprocess = new CPreprocess();
-	if (preprocess)
-	{
-		errLogInf logInf = {nth, logInf.imgNoErr, imgInf};
+	//CPreprocessInt *preprocess = new CPreprocess();
+	//if (preprocess)
+	//{
+	//	errLogInf logInf = {nth, logInf.imgNoErr, imgInf};
 
-		if ( !preprocess->doit(&imgSrc1) )          // 第一个图片没检测到人脸
-		{
-			logInf.errImg = logInf.img1Err;
-		}
+	//	if ( !preprocess->doit(&imgSrc1) )          // 第一个图片没检测到人脸
+	//	{
+	//		logInf.errImg = logInf.img1Err;
+	//	}
 
-		if ( !preprocess->doit(&imgSrc2) )          // 第二个图片没检测到人脸
-		{
-            if (logInf.errImg == logInf.img1Err)    // 都没检测到
-            {
-                logInf.errImg = logInf.imgAllErr;
-            }
-            else
-            {
-			    logInf.errImg = logInf.img2Err;
-            }
-		}
-		// 输出到日志
-		if (logInf.errImg != logInf.imgNoErr)
-		{
-			imgCoupleDataSet.writeErrorLog(logInf);
-		}
-	}
+	//	if ( !preprocess->doit(&imgSrc2) )          // 第二个图片没检测到人脸
+	//	{
+ //           if (logInf.errImg == logInf.img1Err)    // 都没检测到
+ //           {
+ //               logInf.errImg = logInf.imgAllErr;
+ //           }
+ //           else
+ //           {
+	//		    logInf.errImg = logInf.img2Err;
+ //           }
+	//	}
+	//	// 输出到日志
+	//	if (logInf.errImg != logInf.imgNoErr)
+	//	{
+	//		imgCoupleDataSet.save(logInf);
+	//	}
+	//}
 	
 	// 提取特征
 	CExtfeatInt *extfeat = new CExtfeature();
@@ -101,32 +101,43 @@ CFeature::CFeature(iofile imgCoupleDataSet, int nth, bool type)
 		_mixfeature(&mFeatureImgA, &mFeatureImgB);
 	}
     // 写入到特征集
-    imgCoupleDataSet.writeFeature(this->mFeatureMode.mixfeat, 2);
+    imgCoupleDataSet.save(this->mFeatureMode.mixfeat, nth);
 }
 
 void CFeature::_mixfeature(CFeatureImg *featImg1, CFeatureImg *featImg2)
 {
 	_mixlbpfeat(featImg1, featImg2);
-	_mixsiftfeat(featImg1, featImg2);
-	_mixgaborfeat(featImg1, featImg2);
+	//_mixsiftfeat(featImg1, featImg2);
+	//_mixgaborfeat(featImg1, featImg2);
 	//_mixcatgaborfeat(featImg1, featImg2);
 }
 
+//void CFeature::_mixlbpfeat(CFeatureImg *featImg1, CFeatureImg *featImg2)
+//{
+//	// for lbp feature
+//	vector<int> feat1(featImg1->lbpfeat);
+//	vector<int> feat2(featImg2->lbpfeat);
+//	float lbpDistance = 0;
+//	for (size_t i = 0; i < feat1.size(); ++i)
+//	{
+//		lbpDistance += (feat1[i] - feat2[i]) * (feat1[i] - feat2[i]);
+//	}
+//	lbpDistance = sqrt(lbpDistance) / 58;
+//
+//	mFeatureMode.mixfeat.push_back(lbpDistance);
+//}
+
 void CFeature::_mixlbpfeat(CFeatureImg *featImg1, CFeatureImg *featImg2)
 {
-	// for lbp feature
-	vector<int> feat1(featImg1->lbpfeat);
-	vector<int> feat2(featImg2->lbpfeat);
-	float lbpDistance = 0;
-	for (size_t i = 0; i < feat1.size(); ++i)
-	{
-		lbpDistance += (feat1[i] - feat2[i]) * (feat1[i] - feat2[i]);
-	}
-	lbpDistance = sqrt(lbpDistance) / 58;
-
-	mFeatureMode.mixfeat.push_back(lbpDistance);
+    // for lbp feature
+    for (size_t i = 0; i < featImg1->lbpfeat.size(); ++i)
+    {
+        if (featImg1->lbpfeat[i] != 0 && featImg2->lbpfeat[i] != 0)
+        {
+            mFeatureMode.mixfeat.push_back(abs(featImg1->lbpfeat[i] - featImg2->lbpfeat[i]));
+        }
+    }
 }
-
 void CFeature::_mixsiftfeat(CFeatureImg *featImg1, CFeatureImg *featImg2)
 {
 	// for sift feature

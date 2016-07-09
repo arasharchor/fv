@@ -63,7 +63,7 @@ void CModelANN::train( const cv::Mat &trains, const cv::Mat &labels)
 double CModelANN::similarity(const CFeature &feat)
 {
 	Mat sampleMat(1, feat.mFeatureMode.mixfeat.size(), CV_32FC1);
-	for(int j=0; j<feat.mFeatureMode.mixfeat.size(); j++)
+	for(size_t j=0; j<feat.mFeatureMode.mixfeat.size(); j++)
 			sampleMat.at<float>(j) = feat.mFeatureMode.mixfeat.at(j);
 	Mat responseMat;
 	ANN->predict(sampleMat, responseMat);

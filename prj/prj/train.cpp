@@ -13,38 +13,42 @@
 #include "cfeature.h"
 #include "iofile.h"
 
-static int TRAIN_NUM = 7200;			//训练图像对个数
+static int trainNums = 7200;			// 训练样本数
+static int jumpNums = 0;               // 跳过
 
 using namespace std;
 using namespace cv;
 
 void train(void)
 {
-    iofile imgCoupleDataSet("datalist.FERET");
+    iofile obj("datalist.FERET",            // 数据集
+                "Dataset.FERET",             // 特征集
+                "逍遥_Distance.txt",         // 相似度
+                "逍遥_ROC.txt",              // ROC
+                "errInf.log"                // 日志
+                );
 
-    vector<CFeature> featureSet(TRAIN_NUM);	//特征集s
-    vector<float> labelSet(TRAIN_NUM);
+    Mat labelSet;                           // 标签集
+
     // 1).提取所有图像的特征
-    for(int i = 0; i < TRAIN_NUM / 2; i++)
+    for(int i = 0; i < trainNums / 2; i++)
     {
-        featureSet[i] = CFeature(imgCoupleDataSet, i, true);
-        labelSet[i] = 1;
-        printf("finish %d\n", i);
-        //showMemoryInfo();
+        labelSet.push_back(1.0);
     }
-    for(int i = 0; i < TRAIN_NUM / 2; i++)
+    for(int i = 0; i < trainNums / 2; i++)
     {
-        featureSet[i + TRAIN_NUM / 2] = CFeature(imgCoupleDataSet, i,false);
-        labelSet[i + TRAIN_NUM / 2] = -1.0;
-        printf("finish %d\n", i + TRAIN_NUM / 2);
-        //showMemoryInfo();
+        labelSet.push_back(-1.0);
     }
-    //2).训练模型
-    
-	//CModelInt *model = new CModelSVM(1.0, CvSVM::RBF);
-	//model->train(featureSet, labelSet);
-	//model->saveModel("svm_model");
+    //labelSet = labelSet.t();              // 列向量—>行向量
 
+    Mat featureSet;                                 //特征集
+    obj.load(featureSet, trainNums, jumpNums);      // 载入
+
+    //2).训练模型
+    //CModelInt *model = new CModelSVM();
+    //model->train(featureSet, labelSet);
+    //model->saveModel("svm_model");
+    
 	CModelInt *model = new CModelANN(0.001, 10, 2);
 	model->train(featureSet, labelSet);
 	model->saveModel("ann_model");

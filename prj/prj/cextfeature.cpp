@@ -48,8 +48,8 @@ void CExtfeature::_do(const Mat *imgWrapSrc, CFeatureImg *featImg )
 {
 	_cextlbp(imgWrapSrc, featImg);
 	//_cextlbp(imgWrapSrc, featStore, 5);
-	_cextsift(imgWrapSrc, featImg);
-	_cextgabor(imgWrapSrc, featImg);
+	//_cextsift(imgWrapSrc, featImg);
+	//_cextgabor(imgWrapSrc, featImg);
 
 	//_ccatgabor(featImg, mean_pooling);
 }

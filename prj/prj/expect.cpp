@@ -17,42 +17,42 @@
 using namespace std;
 using namespace cv;
 
-//const int predNum = 6000;
-//const int jumpNum = 1000;
-
-const int predNum = 1200;
-const int jumpNum = 3600;
+const int predNum = 2000;
+const int jumpNum = 2000;
 
 void expect(void)
 {
-	iofile imgCoupleDataSet("datalist.txt");
+    iofile obj("datalist.FERET",            // 数据集
+        "Dataset.FERET",             // 特征集
+        "逍遥_Distance.txt",         // 相似度
+        "逍遥_ROC.txt",              // ROC
+        "errInf.log"                // 日志
+        );
 
 	vector<CFeature>				featureSet(predNum);    //特征集
 	vector<float>					labelSet(predNum);	    //标签集
 	vector<float>					similSet(predNum);	    //相似度集
 	vector<pair<float,float> >		rocSet(100);            //fpr tpr集
-	vector<float>					rightRate(100);
 
 	//1).提取测试样本特征，并得到对应标签
 
     for(int i = 0; i < predNum / 2; i++)
     {
-        featureSet[i] = CFeature(imgCoupleDataSet, jumpNum + i, true);
+        featureSet[i] = CFeature(obj, jumpNum + i, true);
         labelSet[i] = 1;
         printf("finish %d\n", i + jumpNum);
     }
     for(int i = 0; i < predNum / 2; i++)
     {
-        featureSet[i + predNum / 2] = CFeature(imgCoupleDataSet, jumpNum + i, false);
+        featureSet[i + predNum / 2] = CFeature(obj, jumpNum + i, false);
         labelSet[i + predNum / 2] = -1.0;
         printf("finish %d\n", i + jumpNum);
     }
 	//2).加载识别模型
 	//CModelInt *model = new CModelSVM();
 	//model->loadModel("svm_model");
-	CModelInt *model = new CModelANN();
-	model->loadModel("ann_model");
-
+    CModelInt *model = new CModelANN();
+    model->loadModel("ann_model");
 	//3).计算所有特征的相似度
 	for(int i=0; i<predNum; i++)
 	{
@@ -63,7 +63,7 @@ void expect(void)
 	//4).计算所有hold对应的FPR TPR
 	for(int i=0; i<100; i+=1)
 	{
-		CalFPR_TPR(rocSet[int(i)].first, rocSet[int(i)].second, rightRate[i], labelSet, similSet, i*0.01);
+		CalFPR_TPR(rocSet[int(i)].first, rocSet[int(i)].second, labelSet, similSet, i*0.01);
 	}
 
 	//5).生成输出文件
@@ -75,8 +75,8 @@ void expect(void)
 	     rocSet[i]指阈值为i*0.01时的FPR与TPR，rocSet[i]是个pair<float, float>数据，first是FPR在ROC中是横轴，second是TPR在ROC中是纵轴
 	     FPR可以理解为“负样本识别错误率”，TPR可以理解为“正样本识别正确率”
 	*/
-    imgCoupleDataSet.outputSimilarFile(similSet);
-    imgCoupleDataSet.outputRocFile(rocSet);
+    obj.save(similSet);
+    obj.save(rocSet);
 
-	delete model;
+    delete model;
 }

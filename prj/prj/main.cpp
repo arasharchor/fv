@@ -4,12 +4,19 @@
 
 using namespace std;
 
+void prefeat(void);
 void train(void);
 void expect(void);
 
 int main(void)
 {
+    //prefeat();
+
     train();
+
     expect();
+
+    system("pause");
+
     return 0;
 }

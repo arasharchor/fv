@@ -1,97 +1,111 @@
+#include <opencv.hpp>
 #include "iofile.h"
 
 using namespace std;
+using namespace cv;
 
-
-iofile::iofile(string dataListFile)
+iofile::iofile(string datalist = "datalist.txt", 
+                string featlist = "Dataset.feat",
+                string distfile = "逍遥_Distance.txt",
+                string rocfile = "逍遥_ROC.txt",
+                string errfile = "errInf.log"
+                )
 {
-	dataList = dataListFile;
-	posCoupleSize = 0;
-	negCoupleSize = 0;
+	dataList = datalist;
+    featList = featlist;;
+    errorLog = errfile;;
+    distFile = distfile;;
+    rocFile = rocfile;
+
+	posNums = 0;
+	negNums = 0;
 
 	string str;
-	ifstream listFile(dataList);
+	ifstream fp(dataList);
 
-	getline(listFile, str);
+	getline(fp, str);
 	lineLength = str.length();
 
-	for (size_t i = 0; i < str.length(); ++i)
-	{
-		if (str[i] == ':')
-		{
-			subStringPos.push_back(i);
-		}
-	}
+    colonPos.push_back(str.find(':'));
+    colonPos.push_back(str.rfind(':'));
 
-	if (str[subStringPos[1] + 1] == '1')			// label
+    fp.seekg(ios::beg);
+	while(!fp.eof())
 	{
-		posCoupleSize++;
-	}
-	else
-	{
-		negCoupleSize++;
-	}
-
-	while(!listFile.eof())
-	{
-		getline(listFile, str);
+		getline(fp, str);
 		if (str.length() == lineLength)
 		{
-			if (str[subStringPos[1] + 1] == '1')	// label
-			{
-				posCoupleSize++;
-			}
-			else
-			{
-				negCoupleSize++;
-			}	
+            (str.back() == '1') ? (posNums++) : (negNums++);
 		}
 	}
-
-	listFile.close();
+	fp.close();
 }
 
-int iofile::posCoupleNums()
+int iofile::posSamplesNums(void)
 {
-	return posCoupleSize;
+    return posNums;
 }
 
-int iofile::negCoupleNums()
+int iofile::negSamplesNums(void)
 {
-	return negCoupleSize;
+    return negNums;
 }
 
-void iofile::extCoupleImageInf(coupleImageInf &inf, int nth)
+int iofile::rowNums(void)
+{
+    return (posNums + negNums);
+}
+
+int iofile::cloNums(void)
+{
+    ifstream fp(featList);
+    string str;
+    int cnt = 0;
+    double data;
+    getline(fp, str);
+    istringstream is(str);
+    while(is >> data)
+    {
+        cnt++;
+    }
+    fp.close();
+    return cnt;
+}
+
+// 读取第n个样本图相对的路径信息
+void iofile::load(coupleImageInf &inf, int nth)
 {
 	ifstream fp(dataList);
 	fp.seekg(nth * (lineLength + 2));
 
 	string str;
 	getline(fp, str);
+    fp.close();
 
-	inf.imgPath1 = str.substr(0, subStringPos[0]);
-	inf.imgPath2 = str.substr(subStringPos[0] + 1, subStringPos[0]);
+	inf.imgPath1 = str.substr(0, colonPos[0]);
+	inf.imgPath2 = str.substr(colonPos[0] + 1, colonPos[0]);
 }
 
-bool iofile::readFeature(vector<double> &feat, int nth)
+// 读取第n个样本的特征
+bool iofile::load(vector<double> &feat, int nth)
 {
-	fstream fp("Dataset.FERET");
+	fstream fp(featList);
 
-	string lineStr;
-	getline(fp, lineStr);
-    if (lineStr.empty())
+	string str;
+	getline(fp, str);
+    if (str.empty())
     {
         return false;
     }
 
-	fp.seekg(nth * (lineStr.length() + 2));
-	getline(fp, lineStr);
-	if (lineStr.empty())
+	fp.seekg(nth * (str.length() + 2));
+	getline(fp, str);
+	if (str.empty())
 	{
 		return false;
 	}
 
-	istringstream is(lineStr);
+	istringstream is(str);
 	double data;
 	while(is >> data)
 	{
@@ -101,15 +115,16 @@ bool iofile::readFeature(vector<double> &feat, int nth)
 	return true;
 }
 
-void iofile::writeFeature(vector<double> &feat, int nth)
+// 保存第n个样本的特征
+void iofile::save(vector<double> &feat, int nth)
 {
-    ifstream fp("Dataset.FERET");
-    string lineStr;
-    getline(fp, lineStr);
+    ifstream fp(featList);
+    string str;
+    getline(fp, str);
     fp.close();
 
-    ofstream tp("Dataset.FERET", ios::app | ios::beg);
-    tp.seekp(nth* (lineStr.length() + 2));
+    ofstream tp(featList, ios::app | ios::beg);
+    tp.seekp(nth* (str.length() + 2));
     for (size_t i = 0; i < feat.size() - 1; ++i)
     {
         tp << setprecision(6) << scientific << feat[i] << " ";
@@ -118,9 +133,27 @@ void iofile::writeFeature(vector<double> &feat, int nth)
     tp.close();
 }
 
-void iofile::writeErrorLog(const errLogInf &errLog)
+void iofile::save(const Mat &featureSet)
 {
-	ofstream fp("errInf.log", ios::app);	// 'w+'
+    ofstream fp(featList);
+    fp.seekp(ios::trunc);
+    fp.close();
+    ofstream fs(featList);
+    for (int i = 0; i < featureSet.rows; i++)
+    {
+        for (int j = 0; j < featureSet.cols; j++)
+        {
+            fs << setprecision(6) << scientific << featureSet.at<float>(i,j) << " ";
+        }
+        fs << endl;
+    }
+    fs.close();
+}
+
+// 输出到错误日志
+void iofile::save(const errLogInf &errLog)
+{
+	ofstream fp(errorLog, ios::app);	// 'w+'
 
 	fp << errLog.errInf.imgPath1
 		<< ':'
@@ -130,14 +163,16 @@ void iofile::writeErrorLog(const errLogInf &errLog)
 		<< '@'
         << errLog.errImg
 		<< '&'
-        << setprecision(4) << scientific << (double)errLog.errOrder
+        << setprecision(4) << scientific << (float)errLog.errOrder
 		<< endl;
+
 	fp.close();
 }
 
-void iofile::readErrorLog(errLogInf &errLog, int nth)
+// 读取错误日志
+void iofile::load(errLogInf &errLog, int nth)
 {
-    ifstream fp("errInf.log");
+    ifstream fp(errorLog);
     string lineStr;
     getline(fp, lineStr);
 
@@ -145,23 +180,25 @@ void iofile::readErrorLog(errLogInf &errLog, int nth)
     fp.seekg(nth * (lineStr.length() + 2));
     getline(fp, lineStr);
 
-    errLog.errInf.imgPath1 = lineStr.substr(0, subStringPos[0]);
-    errLog.errInf.imgPath2 = lineStr.substr(subStringPos[0] + 1, subStringPos[0]);
-    errLog.errInf.label = lineStr[subStringPos[1] + 1] - '0';
-    errLog.errImg = lineStr[subStringPos[1] + 3] - '0';
+    errLog.errInf.imgPath1 = lineStr.substr(0, colonPos[0]);
+    errLog.errInf.imgPath2 = lineStr.substr(colonPos[0] + 1, colonPos[0]);
+    errLog.errInf.label = lineStr[colonPos[1] + 1] - '0';
+    errLog.errImg = lineStr[colonPos[1] + 3] - '0';
     
-    lineStr = lineStr.substr(subStringPos[1] + 5, lineStr.length() - subStringPos[1] - 5);
+    lineStr = lineStr.substr(colonPos[1] + 5, lineStr.length() - colonPos[1] - 5);
 
-    double nums;
+    int nums;
     istringstream is(lineStr);
     is >> nums;
     errLog.errOrder = nums;
     fp.close();
 }
 
-void iofile::outputSimilarFile(const vector<float> similSet)
+// 保存距离、相似度数据
+void iofile::save(const vector<float> similSet)
 {
-    ofstream fp("逍遥_Distance.txt");
+    ofstream fp(distFile);
+    fp.seekp(ios::trunc);   // 销毁
     fp << setiosflags(ios::fixed) << setprecision(6) << 0.5 << endl;
     for (size_t i = 0; i < similSet.size(); i++)
     {
@@ -170,9 +207,11 @@ void iofile::outputSimilarFile(const vector<float> similSet)
     fp.close();
 }
 
-void iofile::outputRocFile(const vector<pair<float,float> > rocSet)
+// 保存ROC数据
+void iofile::save(const vector<pair<float,float> > rocSet)
 {
-    ofstream fp("逍遥_ROC.txt");
+    ofstream fp(rocFile);
+    fp.seekp(ios::trunc);
     for (size_t i = 0; i < rocSet.size(); i++)
     {
         fp << setiosflags(ios::fixed) << setprecision(4)
@@ -181,4 +220,88 @@ void iofile::outputRocFile(const vector<pair<float,float> > rocSet)
             << rocSet[i].first << endl;
     }
     fp.close();
+}
+
+void iofile::load(Mat &featdata)
+{
+    ifstream fp(featList);
+    string str;
+    float data;
+    vector<vector<float> > swp;
+    while(!fp.eof())
+    {
+        getline(fp, str);
+        istringstream is(str);
+        vector<float> tmp;
+        while(is >> data)
+        {
+            tmp.push_back(data);
+        }
+        swp.push_back(tmp);
+    }
+    swp.pop_back();
+
+    for (size_t i = 0; i < swp.size(); i++)
+    {
+        Mat tmp(swp[i]);
+        tmp = tmp.t();
+        featdata.push_back(tmp);
+    }
+    fp.close();
+}
+
+void iofile::load(Mat &featdata, int trainNums, int jumpNums)
+{
+    ifstream fp(featList);
+    string str;
+    getline(fp, str);
+
+    fp.seekg(ios::beg);
+    fp.seekg(jumpNums * (str.length() + 2));
+
+    float data;
+    vector<vector<float> > swp;
+    for (int i = 0; i < trainNums / 2; i++)
+    {
+        getline(fp, str);
+        istringstream is(str);
+        vector<float> tmp;
+        while(is >> data)
+        {
+            tmp.push_back(data);
+        }
+        swp.push_back(tmp);
+    }
+
+    fp.seekg(ios::beg);
+    fp.seekg((jumpNums + this->posNums) * (str.length() + 2));
+
+    for (int i = 0; i < trainNums / 2; i++)
+    {
+        getline(fp, str);
+        istringstream is(str);
+        vector<float> tmp;
+        while(is >> data)
+        {
+            tmp.push_back(data);
+        }
+        swp.push_back(tmp);
+    }
+    fp.close();
+
+    featdata = Mat::zeros(swp.size(), swp[0].size(), CV_32FC1);
+    for (size_t i = 0; i < swp.size(); i++)
+    {
+        Mat tmp(swp[i]);
+        tmp = tmp.t();
+        featdata.push_back(tmp);
+    }
+}
+
+void iofile::dataNormalize(Mat &featdata)
+{
+    for (int i = 0; i < featdata.cols; i++)
+    {
+        normalize(featdata.col(i), featdata.col(i), 0.000001, 0.999999, NORM_MINMAX);
+    }
 }
