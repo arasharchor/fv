@@ -32,7 +32,8 @@ void expect(void)
 	vector<CFeature>				featureSet(predNum);    //特征集
 	vector<float>					labelSet(predNum);	    //标签集
 	vector<float>					similSet(predNum);	    //相似度集
-	vector<pair<float,float> >		rocSet(100);            //fpr tpr集
+	vector<pair<float, float> >	rocSet(100);            //fpr tpr集
+    vector<float>                  rightRate(100);
 
 	//1).提取测试样本特征，并得到对应标签
 
@@ -63,7 +64,7 @@ void expect(void)
 	//4).计算所有hold对应的FPR TPR
 	for(int i=0; i<100; i+=1)
 	{
-		CalFPR_TPR(rocSet[int(i)].first, rocSet[int(i)].second, labelSet, similSet, i*0.01);
+		CalFPR_TPR(rocSet[int(i)].first, rocSet[int(i)].second, rightRate[i], labelSet, similSet, i*0.01);
 	}
 
 	//5).生成输出文件
