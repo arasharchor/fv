@@ -36,25 +36,38 @@ bool CPreprocess::_detectObjectsCustom(Mat &img)
 	int *pResults = NULL;
 	pResults = facedetect_multiview_reinforce((unsigned char*)(gray.ptr(0)), gray.cols, gray.rows, gray.step, 1.08f, 2, 16);
 
+    if (*pResults == 0)
+    {
+        return false;
+    }
     // 检测到人脸
-	if (*pResults != 0)
-	{
-		short *p = ((short*)(pResults + 1));
-		int x = p[0];
-		int y = p[1];
-		int w = p[2];
-		int h = p[3];
-		//int neighbors = p[4];
-		//int angle = p[5];
+    else
+    {
+        int maxArea = 0;
+        int tx = 0, ty = 0, th = 0, tw = 0;
 
-		if (h < 10 || w < 10)
-		{
-            return false;
-		}
-		else
-		{
-			img = img(Rect(x, y, h, w));
-		}
-	}
+	    for (int i = 0; i < *pResults; i++)
+	    {
+		    short *p = ((short*)(pResults + 1)) + 6 * i;
+		    int x = p[0];
+		    int y = p[1];
+		    int w = p[2];
+		    int h = p[3];
+		    //int neighbors = p[4];
+		    //int angle = p[5];
+
+            // 合法
+            if (x < 0)  x = 0;
+            if (y < 0)  y = 0;
+            if (x + h > img.rows)   h = img.rows - x;
+            if (y + w > img.cols)   w = img.cols - y;
+
+            if (maxArea < h * w)
+            {
+                tx = x; ty = y; th = h; tw = w;
+            }
+	    }
+        img = img(Rect(tx, ty, th, tw));
+    }
     return true;
 }

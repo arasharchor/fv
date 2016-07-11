@@ -13,7 +13,7 @@
 #include "cfeature.h"
 #include "iofile.h"
 
-static int trainNums = 7200;			// 训练样本数
+static int trainNums = 8000;			// 训练样本数
 static int jumpNums = 0;               // 跳过
 
 using namespace std;

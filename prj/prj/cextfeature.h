@@ -15,7 +15,7 @@ public:
 	/* interface */
 public:
 	void doit(const cv::Mat *imgWrapSrc, CFeatureImg *featImg) override;
-
+    void getTable(std::vector<int> &table) override;
 	/* member fun */
 //private:
 	void _do(const cv::Mat *imgWrapSrc, CFeatureImg *featImg);
@@ -33,7 +33,7 @@ public:
 private:
 	enum{mean_pooling, max_pooling};
 
-	int *utable;
+	std::vector<int> utable;
 	int high;
 	int width;
 

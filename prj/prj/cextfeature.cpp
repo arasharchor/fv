@@ -31,12 +31,16 @@ CExtfeature::CExtfeature()
 	//  0   8
 		255, 0
 	};
-	utable = new int[256];
-	memset(utable, 0, 256 * sizeof(int));
+    utable.resize(256, 0);
 	for (int i = 0; i < 58; ++i)
 	{
 		utable[tmp[i]] = 1;
 	}
+}
+
+void CExtfeature::getTable(std::vector<int> &table)
+{
+    table = vector<int>(utable);
 }
 
 void CExtfeature::doit(const Mat *imgWrapSrc, CFeatureImg *featImg )

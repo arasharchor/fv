@@ -12,7 +12,7 @@ public:
 	/* interface */
 public:
 	virtual void doit(const cv::Mat *imgWrapSrc, CFeatureImg *featImg )=0;
-
+    virtual void getTable(std::vector<int> &table) = 0;
 	/* var member */
 public:
 };

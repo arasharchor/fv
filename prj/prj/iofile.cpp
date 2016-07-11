@@ -289,7 +289,7 @@ void iofile::load(Mat &featdata, int trainNums, int jumpNums)
     }
     fp.close();
 
-    featdata = Mat::zeros(swp.size(), swp[0].size(), CV_32FC1);
+    //featdata = Mat::zeros(swp.size(), swp[0].size(), CV_32FC1);
     for (size_t i = 0; i < swp.size(); i++)
     {
         Mat tmp(swp[i]);

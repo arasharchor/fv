@@ -17,13 +17,13 @@
 using namespace std;
 using namespace cv;
 
-const int predNum = 2000;
-const int jumpNum = 2000;
+const int predNum = 6000;
+const int jumpNum = 0;
 
 void expect(void)
 {
-    iofile obj("datalist.FERET",            // 数据集
-        "Dataset.FERET",             // 特征集
+    iofile obj("datalist.txt",            // 数据集
+        "Dataset.ZET",             // 特征集
         "逍遥_Distance.txt",         // 相似度
         "逍遥_ROC.txt",              // ROC
         "errInf.log"                // 日志

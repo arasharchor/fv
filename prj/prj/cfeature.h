@@ -42,9 +42,9 @@ public:
 public:
 
 	/* member fun */
-	void _mixfeature(CFeatureImg *featImg1, CFeatureImg *featImg2);
+	void _mixfeature(CFeatureImg *featImg1, CFeatureImg *featImg2, std::vector<int> &table);
 
-	void _mixlbpfeat(CFeatureImg *featImg1, CFeatureImg *featImg2);
+	void _mixlbpfeat(CFeatureImg *featImg1, CFeatureImg *featImg2, std::vector<int> &table);
 	void _mixsiftfeat(CFeatureImg *featImg1, CFeatureImg *featImg2);
 	void _mixgaborfeat(CFeatureImg *featImg1, CFeatureImg *featImg2);
 

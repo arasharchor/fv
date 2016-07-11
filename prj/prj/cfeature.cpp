@@ -36,7 +36,7 @@ CFeature::CFeature(Mat *imgSrc1, Mat *imgSrc2)
 		CFeatureImg mFeatureImgA, mFeatureImgB;
 		extfeat->doit(imgSrc1, &mFeatureImgA);
 		extfeat->doit(imgSrc2, &mFeatureImgB);
-		_mixfeature(&mFeatureImgA, &mFeatureImgB);
+		_mixfeature(&mFeatureImgA, &mFeatureImgB, vector<int>());
 	}
 }
 
@@ -63,50 +63,55 @@ CFeature::CFeature(iofile imgCoupleDataSet, int nth, bool type)
 	Mat imgSrc1 = imread(imgInf.imgPath1, IMREAD_GRAYSCALE);
 	Mat imgSrc2 = imread(imgInf.imgPath2, IMREAD_GRAYSCALE);
 
-	//CPreprocessInt *preprocess = new CPreprocess();
-	//if (preprocess)
-	//{
-	//	errLogInf logInf = {nth, logInf.imgNoErr, imgInf};
+    CPreprocessInt *preprocess = new CPreprocess();
+    if (preprocess)
+    {
+        errLogInf logInf = {nth, logInf.imgNoErr, imgInf};
 
-	//	if ( !preprocess->doit(&imgSrc1) )          // 第一个图片没检测到人脸
-	//	{
-	//		logInf.errImg = logInf.img1Err;
-	//	}
+        if ( !preprocess->doit(&imgSrc1) )          // 第一个图片没检测到人脸
+		{
+			logInf.errImg = logInf.img1Err;
+		}
 
-	//	if ( !preprocess->doit(&imgSrc2) )          // 第二个图片没检测到人脸
-	//	{
- //           if (logInf.errImg == logInf.img1Err)    // 都没检测到
- //           {
- //               logInf.errImg = logInf.imgAllErr;
- //           }
- //           else
- //           {
-	//		    logInf.errImg = logInf.img2Err;
- //           }
-	//	}
-	//	// 输出到日志
-	//	if (logInf.errImg != logInf.imgNoErr)
-	//	{
-	//		imgCoupleDataSet.save(logInf);
-	//	}
-	//}
+		if ( !preprocess->doit(&imgSrc2) )          // 第二个图片没检测到人脸
+		{
+            if (logInf.errImg == logInf.img1Err)    // 都没检测到
+            {
+                logInf.errImg = logInf.imgAllErr;
+            }
+            else
+            {
+			    logInf.errImg = logInf.img2Err;
+            }
+		}
+		// 输出到日志
+		if (logInf.errImg != logInf.imgNoErr)
+		{
+			imgCoupleDataSet.save(logInf);
+		}
+	}
 	
+    resize(imgSrc1, imgSrc1, Size(80, 80), 0, 0, CV_INTER_LINEAR);
+    resize(imgSrc2, imgSrc2, Size(80, 80), 0, 0, CV_INTER_LINEAR);
+
 	// 提取特征
 	CExtfeatInt *extfeat = new CExtfeature();
+    vector<int> table;
+    extfeat->getTable(table);
 	if(extfeat)
 	{
 		CFeatureImg mFeatureImgA, mFeatureImgB;
 		extfeat->doit(&imgSrc1, &mFeatureImgA);
 		extfeat->doit(&imgSrc2, &mFeatureImgB);
-		_mixfeature(&mFeatureImgA, &mFeatureImgB);
+		_mixfeature(&mFeatureImgA, &mFeatureImgB, table);
 	}
     // 写入到特征集
     imgCoupleDataSet.save(this->mFeatureMode.mixfeat, nth);
 }
 
-void CFeature::_mixfeature(CFeatureImg *featImg1, CFeatureImg *featImg2)
+void CFeature::_mixfeature(CFeatureImg *featImg1, CFeatureImg *featImg2, vector<int> &table)
 {
-	_mixlbpfeat(featImg1, featImg2);
+	_mixlbpfeat(featImg1, featImg2, table);
 	//_mixsiftfeat(featImg1, featImg2);
 	//_mixgaborfeat(featImg1, featImg2);
 	//_mixcatgaborfeat(featImg1, featImg2);
@@ -127,12 +132,12 @@ void CFeature::_mixfeature(CFeatureImg *featImg1, CFeatureImg *featImg2)
 //	mFeatureMode.mixfeat.push_back(lbpDistance);
 //}
 
-void CFeature::_mixlbpfeat(CFeatureImg *featImg1, CFeatureImg *featImg2)
+void CFeature::_mixlbpfeat(CFeatureImg *featImg1, CFeatureImg *featImg2, vector<int> &table)
 {
     // for lbp feature
     for (size_t i = 0; i < featImg1->lbpfeat.size(); ++i)
     {
-        if (featImg1->lbpfeat[i] != 0 && featImg2->lbpfeat[i] != 0)
+        if (table[i] == 1)
         {
             mFeatureMode.mixfeat.push_back(abs(featImg1->lbpfeat[i] - featImg2->lbpfeat[i]));
         }
@@ -180,7 +185,7 @@ void CFeature::_mixgaborfeat(CFeatureImg *featImg1, CFeatureImg *featImg2)
 		extfeat->_cextlbp(f1, &mFeatImgA);
 		extfeat->_cextlbp(f2, &mFeatImgB);
 
-		_mixlbpfeat(&mFeatImgA, &mFeatImgB);
+		_mixlbpfeat(&mFeatImgA, &mFeatImgB, vector<int>());
 	}
 }
 
