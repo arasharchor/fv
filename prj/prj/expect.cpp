@@ -51,9 +51,8 @@ void expect(void)
     }
 	//2).加载识别模型
 	//CModelInt *model = new CModelSVM();
-	//model->loadModel("svm_model");
     CModelInt *model = new CModelANN();
-    model->loadModel("ann_model");
+    model->loadModel("model");
 	//3).计算所有特征的相似度
 	for(int i=0; i<predNum; i++)
 	{
@@ -79,5 +78,5 @@ void expect(void)
     obj.save(similSet);
     obj.save(rocSet);
 
-    delete model;
+//    delete model;
 }

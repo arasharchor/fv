@@ -28,29 +28,26 @@ void train(void)
                 "errInf.log"                // 日志
                 );
 
-    Mat labelSet;                           // 标签集
+	Mat labelSet = Mat::zeros(trainNums, 1, CV_32FC1);                           // 标签集
 
     // 1).提取所有图像的特征
     for(int i = 0; i < trainNums / 2; i++)
     {
-        labelSet.push_back(1.0);
+		labelSet.at<float>(i) = 1.0;
     }
     for(int i = 0; i < trainNums / 2; i++)
     {
-        labelSet.push_back(-1.0);
+		labelSet.at<float>(i + trainNums / 2) = -1.0;
     }
-    //labelSet = labelSet.t();              // 列向量—>行向量
-
+	
     Mat featureSet;                                 //特征集
     obj.load(featureSet, trainNums, jumpNums);      // 载入
-
     //2).训练模型
-    //CModelInt *model = new CModelSVM();
-    //model->train(featureSet, labelSet);
-    //model->saveModel("svm_model");
-    
-	CModelInt *model = new CModelANN(0.001, 10, 2);
+//    CModelInt *model = new CModelSVM(0.00001, CvSVM::LINEAR);
+//    model->train(featureSet, labelSet);
+//    model->saveModel("model");
+	CModelInt *model = new CModelANN(0.001, 5, CvANN_MLP::GAUSSIAN, 5e2);
 	model->train(featureSet, labelSet);
-	model->saveModel("ann_model");
-	delete model;
+	model->saveModel("model");
+//	delete model;
 }

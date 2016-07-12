@@ -10,16 +10,8 @@ void expect(void);
 
 int main(void)
 {
-    //system("dir ORL\\*.pgm /a-d /o-n /b /s >datalist.ORL");
-
-    //prefeat();
-
     train();
-
-    //expect();
-
-    system("shutdown -s -t 120");
-    system("pause");
+	expect();
 
     return 0;
 }

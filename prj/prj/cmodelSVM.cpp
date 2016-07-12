@@ -7,11 +7,6 @@ using namespace cv;
 
 float svm_predict( CvSVM *svm, const Mat& _sample, bool returnDFVal );
 
-	float C;
-	int type;
-	int max_iter;
-	double epsilon;
-
 CModelSVM::CModelSVM(float _C, int _type, int _max_iter, double _epsilon):
 			SVM(NULL),C(_C),type(_type),max_iter(_max_iter),epsilon(_epsilon)
 {
@@ -78,11 +73,6 @@ void CModelSVM::loadModel(std::string model_file)
 
 void CModelSVM::saveModel(std::string model_file)
 {
-	char backups[1024];
-	
-	sprintf(backups, ".//model//%s_SVM_%f_%d_%d_%d_%f", model_file.c_str(), C, type, max_iter, epsilon);
-	
 	SVM->save(model_file.c_str());
-	SVM->save(backups);
 
 }

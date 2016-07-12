@@ -80,11 +80,5 @@ void CModelANN::loadModel(std::string model_file)
 
 void CModelANN::saveModel(std::string model_file)
 {
-	char backups[1024];
-	
-	sprintf(backups, ".//model//%s_ANN_%f_%d_%d_%d_%f", model_file.c_str(), scale, hiddenSize, type, max_iter, epsilon);
-	
 	ANN->save(model_file.c_str());
-	ANN->save(backups);
-
 }

@@ -255,22 +255,29 @@ void iofile::load(Mat &featdata, int trainNums, int jumpNums)
     ifstream fp(featList);
     string str;
     getline(fp, str);
+	istringstream is(str);
+	float data;
+	int cnt = 0;
+	while (is >> data)
+	{
+		cnt++;
+	}
+	featdata = Mat::zeros(trainNums, cnt, CV_32FC1);
 
     fp.seekg(ios::beg);
     fp.seekg(jumpNums * (str.length() + 2));
-
-    float data;
-    vector<vector<float> > swp;
+    
     for (int i = 0; i < trainNums / 2; i++)
     {
-        getline(fp, str);
-        istringstream is(str);
-        vector<float> tmp;
-        while(is >> data)
+		string stri;
+        getline(fp, stri);
+        istringstream iw(stri);
+		int j = 0;
+        while(iw >> data)
         {
-            tmp.push_back(data);
+			featdata.at<float>(i, j) = data;
+			j++;
         }
-        swp.push_back(tmp);
     }
 
     fp.seekg(ios::beg);
@@ -278,24 +285,17 @@ void iofile::load(Mat &featdata, int trainNums, int jumpNums)
 
     for (int i = 0; i < trainNums / 2; i++)
     {
-        getline(fp, str);
-        istringstream is(str);
-        vector<float> tmp;
+		string stri;
+        getline(fp, stri);
+        istringstream iw(stri);
+		int j = 0;
         while(is >> data)
         {
-            tmp.push_back(data);
+			featdata.at<float>(i + trainNums / 2, j) = data;
+			j++;
         }
-        swp.push_back(tmp);
     }
     fp.close();
-
-    //featdata = Mat::zeros(swp.size(), swp[0].size(), CV_32FC1);
-    for (size_t i = 0; i < swp.size(); i++)
-    {
-        Mat tmp(swp[i]);
-        tmp = tmp.t();
-        featdata.push_back(tmp);
-    }
 }
 
 void iofile::dataNormalize(Mat &featdata)
